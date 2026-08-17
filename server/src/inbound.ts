@@ -2,6 +2,7 @@ import type { PoolClient } from "pg";
 import { config } from "./config.js";
 import { tx } from "./db.js";
 import { composeReply } from "./reply.js";
+import { resolveConfig } from "./qualify.js";
 import { extractToken } from "./tokens.js";
 
 /** Shape n8n's Normalize node posts to /internal/wa/inbound. */
@@ -31,6 +32,7 @@ type TenantRow = {
   id: string;
   name: string;
   is_demo: boolean;
+  qualification_config: unknown;
 };
 
 type ContactRow = {
@@ -72,7 +74,7 @@ export async function handleInbound(msg: NormalizedInbound): Promise<InboundResu
   return tx(async (client) => {
     const tenant = await one<TenantRow>(
       client,
-      `select id, name, is_demo from tenants where wa_phone_number_id = $1`,
+      `select id, name, is_demo, qualification_config from tenants where wa_phone_number_id = $1`,
       [msg.phoneNumberId],
     );
     if (!tenant) return skip("unknown_tenant");
@@ -139,7 +141,14 @@ export async function handleInbound(msg: NormalizedInbound): Promise<InboundResu
       [conversation.id, inserted.id],
     );
 
-    const body = await composeReply({
+    const previous = await one<{ extracted: Record<string, string | null> }>(
+      client,
+      `select extracted from qualifications
+        where conversation_id = $1 order by created_at desc limit 1`,
+      [conversation.id],
+    );
+
+    const result = await composeReply({
       tenantName: tenant.name,
       profileName: contact.profile_name,
       body: msg.text ?? null,
@@ -147,9 +156,36 @@ export async function handleInbound(msg: NormalizedInbound): Promise<InboundResu
       history,
       tokenJustClaimed: claimedToken,
       dashboardUrl: claimedToken ? `${config.publicAppUrl}/s/${claimedToken}` : null,
+      qualificationConfig: resolveConfig(tenant.qualification_config),
+      knownSlots: previous?.extracted ?? {},
     });
 
-    return send(client, tenant.id, conversation.id, msg, body);
+    if (result.qualification) {
+      const { verdict, slots, missing, model } = result.qualification;
+      const answered = Object.keys(slots).length - missing.length;
+      await client.query(
+        `insert into qualifications
+           (conversation_id, tenant_id, verdict, score, matter_type, reasons, extracted, model)
+         values ($1, $2, $3, $4, $5, $6, $7, $8)`,
+        [
+          conversation.id,
+          tenant.id,
+          verdict,
+          answered,
+          slots["matter_type"] ?? null,
+          JSON.stringify(
+            missing.length === 0
+              ? ["all intake questions answered"]
+              : missing.map((key) => `missing: ${key}`),
+          ),
+          JSON.stringify(slots),
+          model,
+        ],
+      );
+      await client.query(`update conversations set state = $1 where id = $2`, [verdict, conversation.id]);
+    }
+
+    return send(client, tenant.id, conversation.id, msg, result.body);
   });
 }
 
