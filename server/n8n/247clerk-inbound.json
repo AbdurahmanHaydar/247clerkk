@@ -1,0 +1,155 @@
+{
+  "name": "247clerk — inbound",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": ["messages"],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [-1664, -432],
+      "id": "e3c6b28f-f2ae-4fff-9062-ace0856d8fb7",
+      "name": "WhatsApp Trigger",
+      "webhookId": "28b6d94b-80e7-45c9-94e7-9e0774241ee2",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "uZikgcJlBNNooDbA",
+          "name": "WhatsApp OAuth account 247 Clerk"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Flattens Meta's webhook payload into the shape the 247clerk API expects.\n// Status-only events (delivered / read / deleted) carry no messages[] and are\n// dropped here so they never reach the app.\nconst out = [];\n\nfor (const item of $input.all()) {\n  const payload = item.json;\n  const messages = payload.messages;\n  if (!Array.isArray(messages) || messages.length === 0) continue;\n\n  const meta = payload.metadata || {};\n  const contact = (payload.contacts || [])[0] || {};\n\n  for (const m of messages) {\n    let text = null;\n    if (m.type === 'text') {\n      text = m.text?.body ?? null;\n    } else if (m.type === 'interactive') {\n      text = m.interactive?.button_reply?.title ?? m.interactive?.list_reply?.title ?? null;\n    } else if (m.type === 'button') {\n      text = m.button?.text ?? null;\n    }\n\n    out.push({\n      json: {\n        phoneNumberId: meta.phone_number_id,\n        displayPhoneNumber: meta.display_phone_number,\n        waId: contact.wa_id || m.from,\n        profileName: contact.profile?.name ?? null,\n        messageId: m.id,\n        timestamp: m.timestamp,\n        type: m.type,\n        text,\n        raw: payload,\n      },\n    });\n  }\n}\n\nreturn out;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-1440, -432],
+      "id": "b1a5f9c2-3d47-4e18-9f6a-0c2e8a7d5511",
+      "name": "Normalize"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://172.18.0.1:3000/internal/wa/inbound",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-clerk-secret",
+              "value": "REPLACE_WITH_N8N_SECRET"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-1216, -432],
+      "id": "c9e4d7a1-8b22-4f60-a3d5-6e1b9c04f733",
+      "name": "247clerk API"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8f3c1d90-5a4e-4b77-9d21-7e6f0a2b3c48",
+              "leftValue": "={{ $json.action }}",
+              "rightValue": "send_text",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [-992, -432],
+      "id": "af664e21-6747-40d2-a5c8-fa2e04df08ab",
+      "name": "Reply?"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "={{ $json.phoneNumberId }}",
+        "recipientPhoneNumber": "={{ $json.to }}",
+        "textBody": "={{ $json.body }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [-768, -512],
+      "id": "d14513b3-c0f2-4e5a-ae42-e0f27cfc261a",
+      "name": "Send message",
+      "webhookId": "c57cb777-b1c5-4b39-9588-666078894b6a",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "WdjtRC52cpJhGCeZ",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://172.18.0.1:3000/internal/wa/sent",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-clerk-secret",
+              "value": "REPLACE_WITH_N8N_SECRET"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ outboundRef: $('247clerk API').item.json.outboundRef, waMessageId: $json.messages?.[0]?.id ?? null, status: 'sent' }) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-544, -512],
+      "id": "e7b2a615-9c38-4d51-b0f4-2a8d3e6c9017",
+      "name": "Confirm sent"
+    }
+  ],
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [[{ "node": "Normalize", "type": "main", "index": 0 }]]
+    },
+    "Normalize": {
+      "main": [[{ "node": "247clerk API", "type": "main", "index": 0 }]]
+    },
+    "247clerk API": {
+      "main": [[{ "node": "Reply?", "type": "main", "index": 0 }]]
+    },
+    "Reply?": {
+      "main": [[{ "node": "Send message", "type": "main", "index": 0 }], []]
+    },
+    "Send message": {
+      "main": [[{ "node": "Confirm sent", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}
