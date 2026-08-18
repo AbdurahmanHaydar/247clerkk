@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en-ZA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your live clerk — 247clerk</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%2310221C'/%3E%3Ccircle%20cx='32'%20cy='29'%20r='11'%20fill='%231FA855'/%3E%3Crect%20x='20'%20y='46'%20width='24'%20height='4'%20rx='2'%20fill='%235ED694'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Spline+Sans:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#10221C; --paper:#F6F7F2; --card:#FFFFFF; --green:#1FA855; --green-dark:#158040;
+  --bubble:#E4F6E8; --amber:#B8791F; --muted:#5C6B63; --line:#DDE2DA; --night:#0C1714;
+  --radius:14px; --display:'Bricolage Grotesque',sans-serif; --body:'Spline Sans',sans-serif;
+  --mono:'Spline Sans Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--body);background:var(--paper);color:var(--ink);line-height:1.6;font-size:16px}
+a{color:inherit}
+.wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+
+header{border-bottom:1px solid var(--line);background:rgba(246,247,242,.92);position:sticky;top:0;z-index:20}
+.head-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 0}
+.logo{display:flex;align-items:center;gap:9px;font-family:var(--display);font-weight:800;font-size:19px;text-decoration:none}
+.logo .dot{width:11px;height:11px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(31,168,85,.16)}
+.live{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.live .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.82)}}
+
+main{padding:34px 0 64px}
+h1{font-family:var(--display);font-size:clamp(26px,4vw,36px);line-height:1.15;font-weight:800;letter-spacing:-.01em}
+.sub{color:var(--muted);margin-top:8px;max-width:56ch}
+
+/* ---------- waiting state ---------- */
+.connect{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px;margin-top:26px;
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px;align-items:center}
+.steps{list-style:none;display:grid;gap:14px;margin:22px 0 24px}
+.steps li{display:flex;gap:12px;align-items:flex-start}
+.steps .n{flex:none;width:23px;height:23px;border-radius:50%;background:var(--ink);color:var(--paper);
+  font-family:var(--mono);font-size:12px;display:grid;place-items:center;margin-top:2px}
+.code{font-family:var(--mono);font-weight:500;background:var(--bubble);border-radius:6px;padding:1px 7px}
+.btn{display:inline-flex;align-items:center;gap:9px;background:var(--green);color:#fff;text-decoration:none;
+  font-weight:600;padding:13px 22px;border-radius:999px;border:none;font-size:16px;font-family:var(--body);cursor:pointer;
+  transition:background .18s ease}
+.btn:hover{background:var(--green-dark)}
+.qr{text-align:center}
+.qr svg{width:172px;height:172px;display:block;border:1px solid var(--line);border-radius:10px;padding:9px;background:#fff}
+.qr figcaption{font-size:12.5px;color:var(--muted);margin-top:9px;font-family:var(--mono)}
+.waiting{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:14.5px;margin-top:20px;
+  border-top:1px dashed var(--line);padding-top:18px}
+
+/* ---------- connected state ---------- */
+.grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:22px;margin-top:26px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.panel-head{padding:15px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;
+  justify-content:space-between;gap:12px}
+.panel-head h2{font-family:var(--display);font-size:16px;font-weight:600}
+.panel-head .meta{font-family:var(--mono);font-size:12px;color:var(--muted)}
+
+.thread{padding:20px;display:flex;flex-direction:column;gap:11px;max-height:62vh;overflow-y:auto;background:#FBFCF9}
+.msg{max-width:78%;padding:10px 14px;border-radius:14px;font-size:15px;white-space:pre-wrap;word-wrap:break-word}
+.msg.in{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px}
+.msg.out{align-self:flex-end;background:var(--bubble);border-bottom-right-radius:4px}
+.msg time{display:block;font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:5px}
+
+.verdict{padding:20px}
+.pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:7px 15px;font-weight:600;font-size:14px}
+.pill.qualified{background:var(--green);color:#fff}
+.pill.unqualified{background:#E9EBE5;color:var(--muted)}
+.pill.needs_info{background:#FBF0DC;color:var(--amber)}
+.score{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-top:11px}
+.slots{list-style:none;display:grid;gap:11px;margin-top:17px}
+.slots li{display:flex;gap:11px;align-items:flex-start;font-size:14.5px;padding-bottom:11px;border-bottom:1px solid var(--line)}
+.slots li:last-child{border-bottom:none;padding-bottom:0}
+.slots .tick{flex:none;width:19px;height:19px;border-radius:50%;display:grid;place-items:center;font-size:11px;
+  color:#fff;background:var(--green);margin-top:2px}
+.slots .tick.off{background:#E9EBE5;color:var(--muted)}
+.slots .label{display:block;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.slots .value{color:var(--ink)}
+.slots .value.empty{color:var(--muted);font-style:italic}
+.cta{margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
+.cta p{font-size:14px;color:var(--muted);margin-bottom:13px}
+
+.empty-thread{color:var(--muted);font-size:14.5px;text-align:center;padding:34px 0}
+.hint{margin-top:22px;font-size:13.5px;color:var(--muted);text-align:center}
+.hidden{display:none !important}
+@media (max-width:860px){
+  .connect{grid-template-columns:1fr;gap:26px}
+  .qr{order:-1}
+  .grid{grid-template-columns:1fr}
+  .thread{max-height:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap head-inner">
+    <a class="logo" href="https://247clerk.com/"><span class="dot"></span>247clerk</a>
+    <span class="live"><span class="pulse"></span><span id="live-label">Live demo</span></span>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ================= waiting ================= -->
+  <section id="view-connect">
+    <h1>Your clerk is on duty.</h1>
+    <p class="sub">Send it a message the way one of your clients would. Everything it hears shows up on this page, live.</p>
+
+    <div class="connect">
+      <div>
+        <ol class="steps">
+          <li><span class="n">1</span><span>Open WhatsApp using the button or the QR code.</span></li>
+          <li><span class="n">2</span><span>Send the message that's already typed for you — it carries your code <span class="code" id="code-inline">—</span>.</span></li>
+          <li><span class="n">3</span><span>Then describe a matter, like a client would. Watch this page.</span></li>
+        </ol>
+        <a class="btn" id="wa-btn" href="#" rel="noopener">Open WhatsApp</a>
+        <div class="waiting"><span class="pulse" style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block"></span> Waiting for your first message…</div>
+      </div>
+      <figure class="qr">
+        <div id="qr-slot"></div>
+        <figcaption>Scan with your phone</figcaption>
+      </figure>
+    </div>
+    <p class="hint">This page stays live — keep it open while you chat.</p>
+  </section>
+
+  <!-- ================= connected ================= -->
+  <section id="view-live" class="hidden">
+    <h1>Live intake</h1>
+    <p class="sub">This is exactly what your clients would see, and what lands on your desk in the morning.</p>
+
+    <div class="grid">
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Conversation</h2>
+          <span class="meta" id="msg-count">—</span>
+        </div>
+        <div class="thread" id="thread"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>Lead</h2><span class="meta" id="verdict-meta">—</span></div>
+        <div class="verdict">
+          <span class="pill needs_info" id="verdict-pill">Collecting details</span>
+          <div class="score" id="score">—</div>
+          <ul class="slots" id="slots"></ul>
+          <div class="cta hidden" id="cta">
+            <p>This lead answered everything. In your firm, this is the point the clerk books the consultation.</p>
+            <a class="btn" id="book-btn" href="/book">Book onboarding</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+const token = (location.pathname.split('/').filter(Boolean).pop() || '').toUpperCase();
+const el = (id) => document.getElementById(id);
+
+const LABELS = {
+  matter_type: 'Matter type',
+  timeline: 'Timeline',
+  contact_name: 'Contact name',
+};
+const VERDICTS = {
+  qualified: 'Qualified lead',
+  unqualified: 'Not qualified',
+  needs_info: 'Collecting details',
+};
+
+let connected = false;
+let lastCount = -1;
+
+function renderConnect(session) {
+  el('code-inline').textContent = token;
+  el('wa-btn').href = session.waLink || '#';
+  if (session.qrSvg) el('qr-slot').innerHTML = session.qrSvg;
+}
+
+function renderThread(messages) {
+  const thread = el('thread');
+  if (!messages.length) {
+    thread.innerHTML = '<p class="empty-thread">No messages yet.</p>';
+    return;
+  }
+  thread.innerHTML = messages.map((m) => {
+    const time = new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const body = (m.body || '').replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' })[c]);
+    return `<div class="msg ${m.direction === 'in' ? 'in' : 'out'}">${body}<time>${time}</time></div>`;
+  }).join('');
+  thread.scrollTop = thread.scrollHeight;
+}
+
+function renderVerdict(qualification) {
+  const slots = (qualification && qualification.extracted) || {};
+  const keys = Object.keys(LABELS);
+  const answered = keys.filter((k) => slots[k]).length;
+  const verdict = (qualification && qualification.verdict) || 'needs_info';
+
+  const pill = el('verdict-pill');
+  pill.className = 'pill ' + verdict;
+  pill.textContent = VERDICTS[verdict] || verdict;
+
+  el('score').textContent = answered + ' of ' + keys.length + ' questions answered';
+  el('verdict-meta').textContent = verdict === 'qualified' ? 'ready to book' : verdict.replace('_', ' ');
+
+  el('slots').innerHTML = keys.map((key) => {
+    const value = slots[key];
+    return `<li>
+      <span class="tick ${value ? '' : 'off'}">${value ? '&#10003;' : '&middot;'}</span>
+      <span><span class="label">${LABELS[key]}</span>
+      <span class="value ${value ? '' : 'empty'}">${value ? String(value).replace(/[<>&]/g, '') : 'not answered yet'}</span></span>
+    </li>`;
+  }).join('');
+
+  el('cta').classList.toggle('hidden', verdict !== 'qualified');
+}
+
+async function tick() {
+  try {
+    const session = await fetch('/api/session/' + token).then((r) => r.json());
+    if (session.error) return;
+
+    if (!connected) renderConnect(session);
+
+    if (session.connected && !connected) {
+      connected = true;
+      el('view-connect').classList.add('hidden');
+      el('view-live').classList.remove('hidden');
+      el('live-label').textContent = 'Connected';
+    }
+
+    if (!connected) return;
+
+    const data = await fetch('/api/session/' + token + '/messages').then((r) => r.json());
+    if (data.messages.length !== lastCount) {
+      lastCount = data.messages.length;
+      renderThread(data.messages);
+      el('msg-count').textContent = data.messages.length + ' messages';
+    }
+    renderVerdict(data.qualification);
+  } catch (error) {
+    // Network blip — the next tick picks it up.
+  }
+}
+
+tick();
+setInterval(tick, 2000);
+</script>
+</body>
+</html>

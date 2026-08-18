@@ -16,6 +16,9 @@ export const config = {
   geminiFallbackModel: process.env.GEMINI_FALLBACK_MODEL ?? "gemini-2.5-flash",
   demoWaNumber: required("DEMO_WA_NUMBER"),
   publicAppUrl: process.env.PUBLIC_APP_URL ?? "https://app.247clerk.com",
+  /** Set to a Cal.com (or similar) link and /book redirects there instead of
+   *  serving the placeholder page. */
+  bookingUrl: process.env.BOOKING_URL ?? "",
   /** Free messages a single phone number gets on the shared demo number. */
   demoMessageCap: Number(process.env.DEMO_MESSAGE_CAP ?? 25),
 };

@@ -34,7 +34,30 @@ dashboard queries live in Postgres where they are queryable.
 | `src/qualify.ts` | The three intake questions and the verdict rule. |
 | `src/gemini.ts` | Gemini client: structured output, retry, model fallback. |
 | `src/tokens.ts` | `CLK-XXXXXX` signup codes and wa.me deep links. |
+| `public/session.html` | The live demo dashboard served at `/s/:token`. |
+| `public/book.html` | Placeholder for `/book`; set `BOOKING_URL` to redirect instead. |
 | `n8n/247clerk-inbound.json` | The n8n workflow. Secret is a placeholder — fill it in n8n. |
+
+## The visitor journey
+
+```
+247clerk.com  ──►  app.247clerk.com/start   mints a code, redirects
+                            │
+                            ▼
+                   /s/CLK-XXXXXX            QR + "Open WhatsApp", polling
+                            │
+              first WhatsApp message claims the code
+                            ▼
+                   /s/CLK-XXXXXX            transcript + live lead verdict
+```
+
+`/start` mints the session server-side and redirects, so there is no form to
+fill, nothing to lose on refresh, and the dashboard URL is shareable. The page
+polls `/api/session/:token` every 2s.
+
+Anyone holding the code can view that conversation — it is the visitor's own
+chat and the code is single-use random, but it is not authentication. Real
+login (magic link) belongs with per-tenant onboarding, not the demo.
 
 ## Infrastructure on this host
 

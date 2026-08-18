@@ -1,13 +1,23 @@
 import { serve } from "@hono/node-server";
 import { timingSafeEqual } from "node:crypto";
+import { readFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import QRCode from "qrcode";
 import { config } from "./config.js";
 import { logEvent, pool, query, queryOne } from "./db.js";
 import { handleInbound, parseInbound } from "./inbound.js";
 import { buildWaLink, generateToken } from "./tokens.js";
 
 const app = new Hono();
+
+const PUBLIC_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "public");
+
+async function page(name: string): Promise<string> {
+  return readFile(join(PUBLIC_DIR, name), "utf8");
+}
 
 app.use(
   "/api/*",
@@ -72,25 +82,38 @@ app.post("/internal/wa/sent", async (c) => {
 
 /* --------------------------------------------------------------------- api */
 
-app.post("/api/signup", async (c) => {
-  const body = (await c.req.json().catch(() => ({}))) as Record<string, unknown>;
-  const str = (key: string) => (typeof body[key] === "string" ? (body[key] as string).slice(0, 200) : null);
+type SessionDetails = { companyName?: string | null; contactName?: string | null; email?: string | null };
 
+/** Mints a signup code against the demo tenant. Shared by /api/signup and /start. */
+async function createSession(source: string, details: SessionDetails = {}): Promise<string | null> {
   const tenant = await queryOne<{ id: string }>(`select id from tenants where is_demo = true limit 1`);
-  if (!tenant) return c.json({ error: "no demo tenant configured" }, 500);
+  if (!tenant) return null;
 
   const token = generateToken();
   await query(
     `insert into signup_tokens (token, tenant_id, company_name, contact_name, email, source)
      values ($1, $2, $3, $4, $5, $6)`,
-    [token, tenant.id, str("companyName"), str("contactName"), str("email"), str("source") ?? "landing"],
+    [token, tenant.id, details.companyName ?? null, details.contactName ?? null, details.email ?? null, source],
   );
-  await logEvent(tenant.id, "token.issued", token, { source: str("source") ?? "landing" });
+  await logEvent(tenant.id, "token.issued", token, { source });
+  return token;
+}
+
+app.post("/api/signup", async (c) => {
+  const body = (await c.req.json().catch(() => ({}))) as Record<string, unknown>;
+  const str = (key: string) => (typeof body[key] === "string" ? (body[key] as string).slice(0, 200) : null);
+
+  const token = await createSession(str("source") ?? "landing", {
+    companyName: str("companyName"),
+    contactName: str("contactName"),
+    email: str("email"),
+  });
+  if (!token) return c.json({ error: "no demo tenant configured" }, 500);
 
   return c.json({ token, waLink: buildWaLink(config.demoWaNumber, token) });
 });
 
-/** Landing page polls this while it waits for the first WhatsApp message. */
+/** The session page polls this while it waits for the first WhatsApp message. */
 app.get("/api/session/:token", async (c) => {
   const token = c.req.param("token").toUpperCase();
   const row = await queryOne<{
@@ -107,11 +130,17 @@ app.get("/api/session/:token", async (c) => {
   );
   if (!row) return c.json({ error: "not_found" }, 404);
 
+  const connected = row.claimed_at !== null;
+  const waLink = buildWaLink(config.demoWaNumber, token);
+
   return c.json({
-    connected: row.claimed_at !== null,
+    connected,
     expired: row.expires_at.getTime() < Date.now(),
     conversationId: row.conversation_id,
     state: row.state,
+    waLink,
+    // Only needed by the pre-connection view; skip the work once they're in.
+    qrSvg: connected ? null : await QRCode.toString(waLink, { type: "svg", margin: 0 }),
   });
 });
 
@@ -137,6 +166,27 @@ app.get("/api/session/:token/messages", async (c) => {
 
   return c.json({ state: conversation.state, messages, qualification: qualification ?? null });
 });
+
+/* ------------------------------------------------------------------- pages */
+
+/**
+ * The one link the landing page needs. Mints a session server-side and hands
+ * the visitor their own dashboard URL — no form, no account, nothing to lose
+ * on refresh.
+ */
+app.get("/start", async (c) => {
+  const token = await createSession(c.req.query("src") ?? "start");
+  if (!token) return c.text("No demo tenant configured.", 500);
+  return c.redirect(`/s/${token}`, 302);
+});
+
+app.get("/s/:token", async (c) => c.html(await page("session.html")));
+
+app.get("/book", async (c) =>
+  config.bookingUrl ? c.redirect(config.bookingUrl, 302) : c.html(await page("book.html")),
+);
+
+app.notFound((c) => c.redirect("https://247clerk.com/", 302));
 
 // Binds on all interfaces so the n8n container can reach us on the docker
 // bridge (172.18.0.1). ufw keeps this port closed to the public internet —
