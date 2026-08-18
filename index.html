@@ -431,6 +431,26 @@ details .a{padding:0 24px 22px;color:var(--muted)}
 .signup-card iframe{border:none;width:100%;min-height:280px}
 @media (max-width:600px){.signup-card{padding:20px 16px 14px}}
 
+/* ---------- start: demo vs done-for-you ---------- */
+.start-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;max-width:960px;margin:44px auto 0;align-items:start}
+.start-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:32px 30px;
+  display:flex;flex-direction:column;box-shadow:0 26px 55px -38px rgba(16,34,28,.3)}
+.start-card--try{border:2px solid var(--green);background:linear-gradient(180deg,#FFFFFF,#F3FBF5);
+  box-shadow:0 30px 60px -38px rgba(31,168,85,.55)}
+.start-tag{font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;
+  background:var(--green);color:#fff;padding:4px 12px;border-radius:99px;align-self:flex-start;margin-bottom:16px}
+.start-tag--quiet{background:var(--bubble);color:var(--green-dark)}
+.start-card h3{font-family:var(--display);font-weight:600;font-size:1.3rem;line-height:1.25}
+.start-card > p{color:var(--muted);margin-top:10px;font-size:.98rem}
+.start-steps{list-style:none;counter-reset:s;margin:20px 0 26px;display:grid;gap:12px}
+.start-steps li{counter-increment:s;position:relative;padding-left:34px;font-size:.95rem;line-height:1.5}
+.start-steps li::before{content:counter(s);position:absolute;left:0;top:1px;width:22px;height:22px;border-radius:50%;
+  background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:.72rem;display:grid;place-items:center}
+.start-card .btn{align-self:flex-start;margin-top:auto}
+.start-note{font-family:var(--mono);font-size:.76rem;color:var(--muted);margin-top:12px}
+.start-card iframe{border:none;width:100%;min-height:280px;margin-top:18px}
+@media (max-width:600px){.start-card{padding:24px 20px}.start-card .btn{align-self:stretch;text-align:center}}
+
 /* ---------- footer ---------- */
 footer{padding:40px 0;border-top:1px solid var(--line)}
 .foot-top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding-bottom:20px;margin-bottom:20px;border-bottom:1px solid var(--line)}
@@ -497,7 +517,7 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
       <h1>Your practice closes at five.<br>Your clerk <span class="never">never does.</span></h1>
       <p class="lede">247clerk is the WhatsApp clerk for attorneys, immigration lawyers, tax practitioners and estate agents. It handles the after-hours enquiry the moment it lands — screening the matter, answering the process and fee questions, booking the consultation and collecting the consultation fee. You arrive to a diary of qualified consults, not a queue of tyre-kickers.</p>
       <div class="hero-ctas">
-        <a href="#signup" class="btn btn-green">Start free trial</a>
+        <a href="https://app.247clerk.com/start" class="btn btn-green">Try it on WhatsApp</a>
         <a href="#how" class="btn btn-ghost">See how intake works</a>
       </div>
       <p class="hero-note">No code. No credit card. Cancel anytime.</p>
@@ -794,8 +814,26 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
       <h2>Get started</h2>
       <p>Tell us a bit about your practice and we'll set your clerk up. Takes about a minute.</p>
     </div>
-    <div class="signup-card reveal">
-      <iframe data-tally-src="https://tally.so/embed/w7MGEA?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" width="100%" height="280" title="247clerk sign-up form"></iframe>
+    <div class="start-grid reveal">
+      <div class="start-card start-card--try">
+        <span class="start-tag">Try it now · free</span>
+        <h3>Message the clerk yourself</h3>
+        <p>Open WhatsApp and describe a matter the way one of your clients would. Watch it get screened in real time on your own live dashboard.</p>
+        <ol class="start-steps">
+          <li>Tap below — WhatsApp opens with your message already typed</li>
+          <li>Describe a matter, like a client would at 9pm</li>
+          <li>Watch the qualified lead land on your dashboard</li>
+        </ol>
+        <a href="https://app.247clerk.com/start" class="btn btn-green">Try it on WhatsApp</a>
+        <span class="start-note">About a minute. No signup, no card.</span>
+      </div>
+
+      <div class="start-card">
+        <span class="start-tag start-tag--quiet">Ready to go live</span>
+        <h3>Set it up on your number</h3>
+        <p>Tell us about your practice and we'll connect your own WhatsApp number, tune the intake questions to the matters you actually take, and hand it over.</p>
+        <iframe data-tally-src="https://tally.so/embed/w7MGEA?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" width="100%" height="280" title="247clerk sign-up form"></iframe>
+      </div>
     </div>
   </div>
 </section>
