@@ -265,6 +265,14 @@ nav.scrolled{box-shadow:0 12px 32px -20px rgba(16,34,28,.35)}
 .btn-green:hover{background:linear-gradient(180deg,var(--green),var(--green-dark));transform:translateY(-2px);box-shadow:0 14px 28px -12px rgba(31,168,85,.65)}
 .btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
 .btn-ghost:hover{background:var(--ink);color:var(--paper)}
+/* headline WhatsApp CTA — the loudest control on the page */
+.btn-wa{display:inline-flex;align-items:center;gap:11px;padding:17px 36px;font-size:1.12rem;font-weight:700;letter-spacing:-.01em;position:relative}
+.btn-wa.btn-green{box-shadow:0 16px 34px -12px rgba(31,168,85,.8),inset 0 1px 0 rgba(255,255,255,.28)}
+.btn-wa .wa-mark{width:23px;height:23px;flex:0 0 auto;fill:currentColor}
+.btn-wa::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;animation:waPulse 2.8s cubic-bezier(.4,0,.6,1) infinite}
+.btn-wa:hover{transform:translateY(-2px) scale(1.02)}
+.btn-wa:hover::after,.btn-wa:focus-visible::after{animation:none}
+@keyframes waPulse{0%{box-shadow:0 0 0 0 rgba(31,168,85,.5)}70%{box-shadow:0 0 0 15px rgba(31,168,85,0)}100%{box-shadow:0 0 0 0 rgba(31,168,85,0)}}
 .nav-links .btn{padding:9px 20px;font-size:.92rem}
 .menu-btn{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;padding:10px 8px;cursor:pointer}
 .menu-btn span{display:block;width:20px;height:2px;background:var(--ink);border-radius:2px;transition:transform .2s ease}
@@ -284,7 +292,9 @@ nav.open .mobile-panel{display:block}
 h1{font-family:var(--display);font-weight:800;font-size:clamp(2.5rem,5.2vw,4rem);line-height:1.04;letter-spacing:-.03em}
 h1 .never{color:var(--green-dark);white-space:nowrap}
 .hero p.lede{margin:22px 0 32px;font-size:1.18rem;color:var(--muted);max-width:34rem}
-.hero-ctas{display:flex;gap:14px;flex-wrap:wrap}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.hero-ctas .btn-ghost{border-color:rgba(16,34,28,.28);color:var(--muted);font-weight:600}
+.hero-ctas .btn-ghost:hover{border-color:var(--ink);background:var(--ink);color:var(--paper)}
 .hero-note{margin-top:16px;font-family:var(--mono);font-size:.82rem;color:var(--muted)}
 .hero-proof{display:flex;margin-top:28px;border-top:1px solid var(--line);padding-top:20px;max-width:30rem}
 .hero-proof div{padding-right:28px;margin-right:28px;border-right:1px solid var(--line)}
@@ -449,7 +459,7 @@ details .a{padding:0 24px 22px;color:var(--muted)}
 .start-card .btn{align-self:flex-start;margin-top:auto}
 .start-note{font-family:var(--mono);font-size:.76rem;color:var(--muted);margin-top:12px}
 .start-card iframe{border:none;width:100%;min-height:280px;margin-top:18px}
-@media (max-width:600px){.start-card{padding:24px 20px}.start-card .btn{align-self:stretch;text-align:center}}
+@media (max-width:600px){.start-card{padding:24px 20px}.start-card .btn{align-self:stretch;text-align:center;justify-content:center}}
 
 /* ---------- footer ---------- */
 footer{padding:40px 0;border-top:1px solid var(--line)}
@@ -485,6 +495,11 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
   .hero-proof b{font-size:1.15rem}
   .hero-proof div{padding-right:18px;margin-right:18px}
 }
+@media (max-width:600px){
+  .hero-ctas{display:grid;grid-template-columns:1fr}
+  .hero-ctas .btn{width:100%;justify-content:center;text-align:center}
+  .btn-wa{padding:16px 24px}
+}
 </style>
 </head>
 <body>
@@ -517,7 +532,7 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
       <h1>Your practice closes at five.<br>Your clerk <span class="never">never does.</span></h1>
       <p class="lede">247clerk is the WhatsApp clerk for attorneys, immigration lawyers, tax practitioners and estate agents. It handles the after-hours enquiry the moment it lands — screening the matter, answering the process and fee questions, booking the consultation and collecting the consultation fee. You arrive to a diary of qualified consults, not a queue of tyre-kickers.</p>
       <div class="hero-ctas">
-        <a href="https://app.247clerk.com/start" class="btn btn-green">Try it on WhatsApp</a>
+        <a href="https://app.247clerk.com/start" class="btn btn-green btn-wa"><svg class="wa-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.15h-.01a8.24 8.24 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.83 2.42a8.19 8.19 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23Zm4.52-6.17c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.15.16-.29.18-.53.06-.25-.13-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.44.13-.15.17-.25.25-.41.09-.17.04-.31-.02-.44-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.17 0-.44.06-.67.31-.23.25-.87.86-.87 2.08 0 1.23.89 2.41 1.02 2.58.12.16 1.75 2.67 4.23 3.75.59.25 1.05.4 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.29Z"/></svg><span>Try it on WhatsApp</span></a>
         <a href="#how" class="btn btn-ghost">See how intake works</a>
       </div>
       <p class="hero-note">Takes a minute. Nothing to install.</p>
@@ -824,7 +839,7 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
           <li>Describe a matter, like a client would at 9pm</li>
           <li>Watch the qualified lead land on your dashboard</li>
         </ol>
-        <a href="https://app.247clerk.com/start" class="btn btn-green">Try it on WhatsApp</a>
+        <a href="https://app.247clerk.com/start" class="btn btn-green btn-wa"><svg class="wa-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.15h-.01a8.24 8.24 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.83 2.42a8.19 8.19 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23Zm4.52-6.17c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.15.16-.29.18-.53.06-.25-.13-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.44.13-.15.17-.25.25-.41.09-.17.04-.31-.02-.44-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.17 0-.44.06-.67.31-.23.25-.87.86-.87 2.08 0 1.23.89 2.41 1.02 2.58.12.16 1.75 2.67 4.23 3.75.59.25 1.05.4 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.29Z"/></svg><span>Try it on WhatsApp</span></a>
         <span class="start-note">About a minute. No signup, no card.</span>
       </div>
 
