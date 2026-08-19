@@ -1,0 +1,24 @@
+# 247clerk
+
+> 247clerk is a WhatsApp AI clerk that handles after-hours client intake for South African professional practices — attorneys, immigration practitioners, tax practitioners, conveyancers, financial advisers and estate agents. It screens the matter, answers process and fee questions, books the consultation, collects the consultation fee, and escalates anything requiring professional advice to the practitioner.
+
+247clerk runs on a practice's existing WhatsApp business number. It is explicitly built not to give legal, tax or financial advice: it answers process, fee, document and availability questions, screens enquiries against criteria the practice defines, and hands anything touching the merits of a matter to an admitted practitioner. It will sign an operator agreement under POPIA (Protection of Personal Information Act 4 of 2013) on request.
+
+Key facts:
+- Market: South Africa. Pricing in rand.
+- Channel: WhatsApp (not voice).
+- Plans: Front Desk R349/month; Full Shift R649/month. 14-day free trial on both.
+- Setup time: about 15 minutes. Nothing for clients to install.
+- Integrations: Google Calendar, PayFast, Stripe.
+- Contact: admin@247clerk.com
+
+## Product
+- [247clerk home](https://247clerk.com/): What the clerk does, how intake works, who it is built for, pricing and FAQ.
+- [Privacy policy](https://247clerk.com/privacy-policy): How conversation data is collected, stored, retained and deleted.
+
+## Guides
+- [AI receptionists for South African law firms](https://247clerk.com/blog/ai-receptionist-south-african-law-firms): Why voice-first international tools fit SA practices badly, seven evaluation criteria, and the four categories on the market.
+- [WhatsApp and POPIA for law firms](https://247clerk.com/blog/whatsapp-popia-law-firms): Operator agreements under section 21, security safeguards under section 19, special personal information under section 26, retention, and privilege.
+- [The WhatsApp Business Platform for South African practices](https://247clerk.com/blog/whatsapp-business-api-south-africa): Business app versus Business Platform, the 24-hour customer service window, per-message pricing since 1 July 2025, and keeping an existing number.
+- [The after-hours enquiry](https://247clerk.com/blog/after-hours-enquiries-south-africa): Why enquiries cluster at night, what a missed one costs, and the four ways practices cover the gap.
+- [Charging for the first consultation](https://247clerk.com/blog/consultation-fees-no-shows): Pricing a paid consultation, taking the fee at booking, and cutting the no-show rate.

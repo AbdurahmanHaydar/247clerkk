@@ -500,6 +500,18 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
   .hero-ctas .btn{width:100%;justify-content:center;text-align:center}
   .btn-wa{padding:16px 24px}
 }
+/* ---------- further reading ---------- */
+.reading{padding:72px 0;background:var(--paper);border-top:1px solid var(--line)}
+.reading h2{font-family:var(--display);font-weight:800;font-size:clamp(1.6rem,3vw,2.1rem);letter-spacing:-.02em;margin:0 0 10px}
+.reading .lede-sm{color:var(--muted);margin:0 0 34px;max-width:36rem}
+.reading-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.read-card{display:block;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;text-decoration:none;color:inherit;transition:transform .18s ease,box-shadow .18s ease}
+.read-card:hover{transform:translateY(-3px);box-shadow:0 16px 32px -22px rgba(16,34,28,.5)}
+.read-card .tag{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--stamp)}
+.read-card h3{font-family:var(--display);font-weight:700;font-size:1.05rem;line-height:1.28;margin:10px 0 8px}
+.read-card p{color:var(--muted);font-size:.92rem;margin:0}
+.reading-all{display:inline-block;margin-top:28px;font-weight:600;color:var(--green-dark)}
+
 </style>
 </head>
 <body>
@@ -512,6 +524,7 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
       <a href="#who">Who it's for</a>
       <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
+      <a href="/blog">Guides</a>
       <a href="#signup" class="btn btn-green">Start free trial</a>
     </div>
     <button class="menu-btn" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
@@ -522,6 +535,7 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
     <a href="#dashboard">Dashboard</a>
     <a href="#pricing">Pricing</a>
     <a href="#faq">FAQ</a>
+    <a href="/blog">Guides</a>
   </div>
 </nav>
 
@@ -813,6 +827,31 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
   </div>
 </section>
 
+<section class="reading" id="guides">
+  <div class="wrap reveal">
+    <h2>Guides for practices that run on WhatsApp</h2>
+    <p class="lede-sm">Intake, POPIA and the practical mechanics of after-hours cover — written for South African practices, not adapted from American ones.</p>
+    <div class="reading-grid">
+      <a class="read-card" href="/blog/whatsapp-popia-law-firms">
+        <span class="tag">Compliance</span>
+        <h3>WhatsApp and POPIA: what firms may and may not do</h3>
+        <p>Operator agreements under section 21, special personal information, retention, and where privilege actually sits.</p>
+      </a>
+      <a class="read-card" href="/blog/ai-receptionist-south-african-law-firms">
+        <span class="tag">Buying guide</span>
+        <h3>AI receptionists for South African law firms</h3>
+        <p>Why voice-first international tools fit SA practices badly, and seven criteria that separate the options.</p>
+      </a>
+      <a class="read-card" href="/blog/consultation-fees-no-shows">
+        <span class="tag">Practice management</span>
+        <h3>Charging for the first consultation</h3>
+        <p>How to price a paid consultation, take the fee at booking, and cut the no-show rate.</p>
+      </a>
+    </div>
+    <a class="reading-all" href="/blog">All guides &rarr;</a>
+  </div>
+</section>
+
 <section class="final">
   <div class="wrap reveal">
     <h2>Clock out. <span style="color:#5ED694">It clocks in.</span></h2>
@@ -862,6 +901,7 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
     <div class="foot-inner">
       <span>© 2026 247clerk.com — always on duty.</span>
       <span>
+        <a href="/blog">Guides</a>
         <a href="/privacy-policy">Privacy</a>
         <a href="mailto:admin@247clerk.com">admin@247clerk.com</a>
       </span>
