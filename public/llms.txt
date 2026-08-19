@@ -16,6 +16,14 @@ Key facts:
 - [247clerk home](https://247clerk.com/): What the clerk does, how intake works, who it is built for, pricing and FAQ.
 - [Privacy policy](https://247clerk.com/privacy-policy): How conversation data is collected, stored, retained and deleted.
 
+## For your practice
+- [Attorneys and law firms](https://247clerk.com/for/attorneys): Matter screening, conflict-check material, paid first consultations.
+- [Immigration attorneys](https://247clerk.com/for/immigration-attorneys): Visa type, refusal section and date, appeal windows, multilingual intake.
+- [Conveyancers](https://247clerk.com/for/conveyancers): Transfer cost and timeline questions, signed-OTP confirmation, bond and bank details.
+- [Tax practitioners and accountants](https://247clerk.com/for/tax-practitioners): Assessment dates, amounts in dispute, objection deadlines, routine return pricing.
+- [Estate agents and agencies](https://247clerk.com/for/estate-agents): Budget, finance status, timeline, viewings booked into the agent's diary.
+- [Financial and estate advisers](https://247clerk.com/for/financial-advisers): Asset ranges, mandate type, advice needs, discovery meetings.
+
 ## Guides
 - [AI receptionists for South African law firms](https://247clerk.com/blog/ai-receptionist-south-african-law-firms): Why voice-first international tools fit SA practices badly, seven evaluation criteria, and the four categories on the market.
 - [WhatsApp and POPIA for law firms](https://247clerk.com/blog/whatsapp-popia-law-firms): Operator agreements under section 21, security safeguards under section 19, special personal information under section 26, retention, and privilege.
