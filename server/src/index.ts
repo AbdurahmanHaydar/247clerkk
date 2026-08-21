@@ -6,10 +6,12 @@ import { fileURLToPath } from "node:url";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import QRCode from "qrcode";
+import { registerAdmin } from "./admin.js";
 import { config } from "./config.js";
 import { logEvent, pool, query, queryOne } from "./db.js";
 import { handleInbound, parseInbound } from "./inbound.js";
 import { buildWaLink, generateToken } from "./tokens.js";
+import { clientIp, isVisitKind, rateLimited, recordVisitSafely } from "./visits.js";
 
 const app = new Hono();
 
@@ -22,7 +24,12 @@ async function page(name: string): Promise<string> {
 app.use(
   "/api/*",
   cors({
-    origin: ["https://247clerk.com", "https://www.247clerk.com", "http://localhost:5173"],
+    origin: [
+      "https://247clerk.com",
+      "https://www.247clerk.com",
+      "https://app.247clerk.com",
+      "http://localhost:5173",
+    ],
     allowMethods: ["GET", "POST", "OPTIONS"],
   }),
 );
@@ -82,7 +89,12 @@ app.post("/internal/wa/sent", async (c) => {
 
 /* --------------------------------------------------------------------- api */
 
-type SessionDetails = { companyName?: string | null; contactName?: string | null; email?: string | null };
+type SessionDetails = {
+  companyName?: string | null;
+  contactName?: string | null;
+  email?: string | null;
+  visitorId?: string | null;
+};
 
 /** Mints a signup code against the demo tenant. Shared by /api/signup and /start. */
 async function createSession(source: string, details: SessionDetails = {}): Promise<string | null> {
@@ -91,13 +103,59 @@ async function createSession(source: string, details: SessionDetails = {}): Prom
 
   const token = generateToken();
   await query(
-    `insert into signup_tokens (token, tenant_id, company_name, contact_name, email, source)
-     values ($1, $2, $3, $4, $5, $6)`,
-    [token, tenant.id, details.companyName ?? null, details.contactName ?? null, details.email ?? null, source],
+    `insert into signup_tokens (token, tenant_id, company_name, contact_name, email, source, visitor_id)
+     values ($1, $2, $3, $4, $5, $6, $7)`,
+    [
+      token,
+      tenant.id,
+      details.companyName ?? null,
+      details.contactName ?? null,
+      details.email ?? null,
+      source,
+      details.visitorId ?? null,
+    ],
   );
-  await logEvent(tenant.id, "token.issued", token, { source });
+  await logEvent(tenant.id, "token.issued", token, { source, visitorId: details.visitorId ?? null });
   return token;
 }
+
+/**
+ * Where t.js posts what the browser knows: the ipify answer, screen, timezone,
+ * client hints, referrer, UTM. Beacons arrive as text/plain to dodge the CORS
+ * preflight, so the body is parsed by hand rather than through c.req.json().
+ *
+ * Public and unauthenticated by necessity — it is called before anyone has
+ * identified themselves. Rate limited per IP, capped in size, and the `kind`
+ * has to be one we recognise.
+ */
+app.post("/api/track", async (c) => {
+  const ip = clientIp(c);
+  if (rateLimited(ip)) return c.json({ ok: false, reason: "rate_limited" }, 429);
+
+  const raw = await c.req.text().catch(() => "");
+  if (raw.length > 32_000) return c.json({ ok: false, reason: "too_large" }, 413);
+
+  let body: Record<string, unknown>;
+  try {
+    body = JSON.parse(raw) as Record<string, unknown>;
+  } catch {
+    return c.json({ ok: false, reason: "malformed" }, 400);
+  }
+
+  const kind = body["kind"];
+  if (!isVisitKind(kind)) return c.json({ ok: false, reason: "unknown_kind" }, 400);
+
+  recordVisitSafely(c, {
+    kind,
+    token: typeof body["token"] === "string" ? body["token"].slice(0, 20) : null,
+    visitorId: typeof body["visitorId"] === "string" ? body["visitorId"].slice(0, 100) : null,
+    source: typeof body["source"] === "string" ? body["source"].slice(0, 100) : null,
+    client: (body["client"] ?? {}) as Record<string, unknown>,
+  });
+
+  // Nothing to say back, and the beacon is not listening anyway.
+  return c.body(null, 204);
+});
 
 app.post("/api/signup", async (c) => {
   const body = (await c.req.json().catch(() => ({}))) as Record<string, unknown>;
@@ -107,6 +165,7 @@ app.post("/api/signup", async (c) => {
     companyName: str("companyName"),
     contactName: str("contactName"),
     email: str("email"),
+    visitorId: str("visitorId"),
   });
   if (!token) return c.json({ error: "no demo tenant configured" }, 500);
 
@@ -175,12 +234,35 @@ app.get("/api/session/:token/messages", async (c) => {
  * on refresh.
  */
 app.get("/start", async (c) => {
-  const token = await createSession(c.req.query("src") ?? "start");
+  const source = (c.req.query("src") ?? "start").slice(0, 100);
+  // Set by t.js on the landing page, so this arrival and the click that caused
+  // it are the same person.
+  const visitorId = (c.req.query("vid") ?? "").slice(0, 100) || null;
+
+  const token = await createSession(source, { visitorId });
   if (!token) return c.text("No demo tenant configured.", 500);
+
+  // The server's own record of the arrival: real IP, headers, geo. It happens
+  // even when t.js never loads or the visitor blocks it.
+  recordVisitSafely(c, { kind: "start.view", token, visitorId, source });
+
   return c.redirect(`/s/${token}`, 302);
 });
 
 app.get("/s/:token", async (c) => c.html(await page("session.html")));
+
+/** The tracker the landing page and the session page both load. */
+app.get("/t.js", async (c) => {
+  c.header("content-type", "application/javascript; charset=utf-8");
+  c.header("cache-control", "public, max-age=300");
+  c.header("access-control-allow-origin", "*");
+  return c.body(await page("t.js"));
+});
+
+/* ------------------------------------------------------------------- admin */
+// Owner-only. Guarded by the UUID in the path; see server/src/admin.ts.
+
+registerAdmin(app, page);
 
 app.get("/book", async (c) =>
   config.bookingUrl ? c.redirect(config.bookingUrl, 302) : c.html(await page("book.html")),

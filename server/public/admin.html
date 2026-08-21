@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="en-ZA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin — 247clerk</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%2310221C'/%3E%3Ccircle%20cx='32'%20cy='29'%20r='11'%20fill='%231FA855'/%3E%3Crect%20x='20'%20y='46'%20width='24'%20height='4'%20rx='2'%20fill='%235ED694'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Spline+Sans:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#10221C; --paper:#F6F7F2; --card:#FFFFFF; --green:#1FA855; --green-dark:#158040;
+  --bubble:#E4F6E8; --amber:#B8791F; --muted:#5C6B63; --line:#DDE2DA; --night:#0C1714;
+  --radius:14px; --display:'Bricolage Grotesque',sans-serif; --body:'Spline Sans',sans-serif;
+  --mono:'Spline Sans Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--body);background:var(--paper);color:var(--ink);line-height:1.6;font-size:15px}
+a{color:inherit}
+.wrap{max-width:1320px;margin:0 auto;padding:0 20px}
+
+header{border-bottom:1px solid var(--line);background:var(--night);color:#EAF1EC;position:sticky;top:0;z-index:20}
+.head-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:9px;font-family:var(--display);font-weight:800;font-size:18px;text-decoration:none}
+.logo .dot{width:11px;height:11px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(31,168,85,.18)}
+.logo .tag{font-family:var(--mono);font-size:11px;font-weight:400;text-transform:uppercase;letter-spacing:.12em;
+  color:#9FB3A7;border:1px solid #2A3B34;border-radius:999px;padding:2px 9px;margin-left:4px}
+.head-actions{display:flex;align-items:center;gap:14px;font-size:13.5px}
+.head-actions a{color:#9FB3A7;text-decoration:none;font-family:var(--mono);font-size:12px;
+  text-transform:uppercase;letter-spacing:.07em}
+.head-actions a:hover{color:#fff}
+.live{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;color:#9FB3A7;
+  text-transform:uppercase;letter-spacing:.07em}
+.live .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.82)}}
+
+main{padding:26px 0 60px}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:12px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
+.stat .n{font-family:var(--display);font-size:27px;font-weight:800;line-height:1.1;letter-spacing:-.01em}
+.stat .k{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:4px}
+
+.tabs{display:flex;gap:8px;margin:24px 0 14px;flex-wrap:wrap;align-items:center}
+.tab{background:none;border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-family:var(--body);
+  font-size:13.5px;color:var(--muted);cursor:pointer;transition:.15s ease}
+.tab:hover{border-color:var(--muted)}
+.tab.on{background:var(--ink);border-color:var(--ink);color:var(--paper);font-weight:600}
+.search{margin-left:auto;flex:1;min-width:180px;max-width:300px;border:1px solid var(--line);border-radius:999px;
+  padding:8px 15px;font-family:var(--body);font-size:14px;background:var(--card);color:var(--ink)}
+.search:focus{outline:2px solid var(--bubble);border-color:var(--green)}
+
+.split{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:18px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.panel-head{padding:13px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;
+  justify-content:space-between;gap:12px}
+.panel-head h2{font-family:var(--display);font-size:15px;font-weight:600}
+.panel-head .meta{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+
+.people{max-height:74vh;overflow-y:auto}
+.person{display:block;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--line);
+  padding:13px 18px;cursor:pointer;font-family:var(--body);font-size:15px;color:var(--ink);transition:background .12s ease}
+.person:hover{background:#FBFCF9}
+.person.on{background:var(--bubble)}
+.person .row1{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.person .who{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.person .num{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-top:1px}
+.person .row2{display:flex;align-items:center;gap:8px;margin-top:7px;font-size:12px;color:var(--muted);
+  font-family:var(--mono);flex-wrap:wrap}
+
+.dot-pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:2px 10px;font-size:11px;
+  font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;font-weight:500}
+.dot-pill.qualified{background:var(--green);color:#fff}
+.dot-pill.unqualified{background:#E9EBE5;color:var(--muted)}
+.dot-pill.needs_info{background:#FBF0DC;color:var(--amber)}
+.dot-pill.none{background:#E9EBE5;color:var(--muted)}
+.dot-pill.open{background:#E9EBE5;color:var(--muted)}
+.dot-pill.closed{background:#E9EBE5;color:var(--muted)}
+.dot-pill.blocked{background:#F6DCDC;color:#9B2C2C}
+
+.detail{padding:20px;max-height:74vh;overflow-y:auto}
+.detail h3{font-family:var(--display);font-size:20px;font-weight:800;letter-spacing:-.01em}
+.detail .phone{font-family:var(--mono);font-size:14px;color:var(--muted);margin-top:2px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.copy{background:none;border:1px solid var(--line);border-radius:999px;padding:1px 10px;font-family:var(--mono);
+  font-size:11px;color:var(--muted);cursor:pointer}
+.copy:hover{border-color:var(--muted);color:var(--ink)}
+
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px 20px;margin:18px 0 4px;
+  padding:16px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.fact .label{display:block;font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--muted)}
+.fact .value{font-size:14.5px;word-break:break-word}
+.fact .value.empty{color:var(--muted);font-style:italic}
+
+.section-title{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);
+  margin:24px 0 10px;display:flex;align-items:center;gap:10px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--line)}
+
+.convo{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:14px}
+.convo-head{padding:10px 15px;background:#FBFCF9;border-bottom:1px solid var(--line);display:flex;
+  align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-family:var(--mono);
+  font-size:11.5px;color:var(--muted)}
+.thread{padding:16px;display:flex;flex-direction:column;gap:10px;background:#FBFCF9}
+.msg{max-width:78%;padding:9px 13px;border-radius:14px;font-size:14.5px;white-space:pre-wrap;word-wrap:break-word}
+.msg.in{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px}
+.msg.out{align-self:flex-end;background:var(--bubble);border-bottom-right-radius:4px}
+.msg time{display:block;font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:4px}
+.msg .flag{font-family:var(--mono);font-size:10px;color:var(--amber)}
+
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);
+  text-align:left;font-weight:500;padding:9px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.mono{font-family:var(--mono);font-size:12.5px}
+.dim{color:var(--muted)}
+
+details{margin-top:8px}
+summary{cursor:pointer;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+summary:hover{color:var(--ink)}
+pre{font-family:var(--mono);font-size:11.5px;background:#FBFCF9;border:1px solid var(--line);border-radius:8px;
+  padding:11px;overflow-x:auto;margin-top:8px;white-space:pre-wrap;word-break:break-word}
+
+.empty{color:var(--muted);text-align:center;padding:44px 20px;font-size:14.5px}
+.hidden{display:none !important}
+.scroll-x{overflow-x:auto}
+@media (max-width:900px){
+  .split{grid-template-columns:1fr}
+  .people{max-height:340px}
+  .detail{max-height:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap head-inner">
+    <a class="logo" href="#"><span class="dot"></span>247clerk<span class="tag">Admin</span></a>
+    <div class="head-actions">
+      <a id="csv" href="#">Export CSV</a>
+      <span class="live"><span class="pulse"></span><span id="live-label">Live</span></span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="stats" id="stats"></div>
+
+  <div class="tabs">
+    <button class="tab on" data-tab="people" id="tab-people">People</button>
+    <button class="tab" data-tab="unclaimed" id="tab-unclaimed">Unused links</button>
+    <button class="tab" data-tab="visitors" id="tab-visitors">Visitors</button>
+    <input class="search" id="search" type="search" placeholder="Search name, number, email…" autocomplete="off">
+  </div>
+
+  <!-- ================= people ================= -->
+  <section id="view-people">
+    <div class="split">
+      <div class="panel">
+        <div class="panel-head"><h2>Everyone who tried it</h2><span class="meta" id="people-count">—</span></div>
+        <div class="people" id="people"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2 id="detail-title">Details</h2><span class="meta" id="detail-meta"></span></div>
+        <div class="detail" id="detail"><p class="empty">Pick someone on the left to see their conversation.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= unclaimed ================= -->
+  <section id="view-unclaimed" class="hidden">
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Links issued that never got a message</h2><span class="meta" id="unclaimed-count">—</span>
+      </div>
+      <div class="scroll-x"><table id="unclaimed"></table></div>
+    </div>
+  </section>
+
+  <!-- ================= visitors ================= -->
+  <section id="view-visitors" class="hidden">
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Everyone who landed on the page</h2><span class="meta" id="visitors-count">—</span>
+      </div>
+      <div class="scroll-x"><table id="visitors"></table></div>
+    </div>
+    <div class="panel hidden" id="visitor-panel" style="margin-top:18px">
+      <div class="panel-head"><h2 id="visitor-title">Visitor</h2><span class="meta" id="visitor-meta"></span></div>
+      <div class="detail" id="visitor-detail"></div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+const BASE = '/admin/' + location.pathname.split('/')[2];
+const el = (id) => document.getElementById(id);
+
+const LABELS = { matter_type: 'Matter type', timeline: 'Timeline', contact_name: 'Contact name' };
+const VERDICTS = { qualified: 'Qualified', unqualified: 'Not qualified', needs_info: 'Collecting' };
+
+let people = [];
+let unclaimed = [];
+let visitors = [];
+let selectedId = null;
+let filter = '';
+let tab = 'people';
+
+const esc = (value) => String(value ?? '').replace(/[<>&"]/g, (c) => (
+  { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]
+));
+
+function when(value) {
+  if (!value) return '—';
+  const then = new Date(value), mins = Math.round((Date.now() - then) / 60000);
+  if (mins < 1) return 'just now';
+  if (mins < 60) return mins + 'm ago';
+  if (mins < 1440) return Math.round(mins / 60) + 'h ago';
+  if (mins < 20160) return Math.round(mins / 1440) + 'd ago';
+  return then.toLocaleDateString();
+}
+const stamp = (value) => (value ? new Date(value).toLocaleString() : '');
+const clock = (value) => new Date(value).toLocaleString([], {
+  month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
+});
+
+function nameOf(person) {
+  const slots = (person && person.extracted) || {};
+  // The name they typed to the clerk beats the one WhatsApp shows.
+  return person.contact_name || slots.contact_name || person.profile_name || person.company_name || 'Unknown';
+}
+
+/* ------------------------------------------------------------------- list */
+
+function matches(person) {
+  if (!filter) return true;
+  return [person.wa_id, person.profile_name, person.contact_name, person.company_name,
+          person.email, person.source, person.matter_type, person.token]
+    .filter(Boolean).join(' ').toLowerCase().includes(filter);
+}
+
+function renderStats(stats) {
+  const tiles = [
+    ['visitors', 'Visitors'],
+    ['clicks', 'WhatsApp clicks'],
+    ['people', 'People'],
+    ['qualified', 'Qualified'],
+    ['conversations', 'Conversations'],
+    ['messages_in', 'Messages in'],
+    ['messages', 'Messages total'],
+    ['people_24h', 'Active 24h'],
+    ['tokens_issued', 'Links issued'],
+    ['tokens_claimed', 'Links used'],
+  ];
+  el('stats').innerHTML = tiles.map(([key, label]) =>
+    `<div class="stat"><div class="n">${esc(stats[key] ?? 0)}</div><div class="k">${label}</div></div>`
+  ).join('');
+}
+
+function renderPeople() {
+  const shown = people.filter(matches);
+  el('people-count').textContent = shown.length + (filter ? ' of ' + people.length : '') + ' people';
+  el('tab-people').textContent = 'People (' + people.length + ')';
+
+  if (!shown.length) {
+    el('people').innerHTML = '<p class="empty">' +
+      (people.length ? 'Nobody matches that search.' : 'Nobody has messaged the demo number yet.') + '</p>';
+    return;
+  }
+
+  el('people').innerHTML = shown.map((person) => {
+    const verdict = person.verdict || 'none';
+    return `<button class="person ${person.id === selectedId ? 'on' : ''}" data-id="${esc(person.id)}">
+      <span class="row1">
+        <span class="who">${esc(nameOf(person))}</span>
+        <span class="dot-pill ${esc(person.blocked ? 'blocked' : verdict)}">${
+          esc(person.blocked ? 'blocked' : (VERDICTS[verdict] || 'No verdict'))}</span>
+      </span>
+      <span class="num">+${esc(person.wa_id)}</span>
+      <span class="row2">
+        <span>${esc(person.message_total)} msgs</span>
+        <span>·</span>
+        <span>${esc(when(person.last_seen_at))}</span>
+        ${person.city ? '<span>·</span><span>' + esc(person.city) + '</span>' : ''}
+        ${person.device ? '<span>·</span><span>' + esc(person.device) + '</span>' : ''}
+      </span>
+    </button>`;
+  }).join('');
+
+  for (const button of el('people').querySelectorAll('.person')) {
+    button.addEventListener('click', () => select(button.dataset.id));
+  }
+}
+
+function renderUnclaimed() {
+  el('tab-unclaimed').textContent = 'Unused links (' + unclaimed.length + ')';
+  el('unclaimed-count').textContent = unclaimed.length + ' links';
+  if (!unclaimed.length) {
+    el('unclaimed').innerHTML = '<tr><td><p class="empty">Every link issued has been used.</p></td></tr>';
+    return;
+  }
+  el('unclaimed').innerHTML =
+    `<thead><tr><th>Code</th><th>Issued</th><th>Where</th><th>IP</th><th>Device</th>
+      <th>Source</th><th>Got to</th><th></th></tr></thead><tbody>` +
+    unclaimed.map((row) => `<tr>
+      <td class="mono">${esc(row.token)}${row.expired ? '<span class="dim"> · expired</span>' : ''}</td>
+      <td class="mono dim" title="${esc(stamp(row.created_at))}">${esc(when(row.created_at))}</td>
+      <td>${esc(place(row))}</td>
+      <td class="mono">${esc(row.ip || '—')}</td>
+      <td class="mono dim">${esc(machine(row))}</td>
+      <td class="mono dim">${esc(row.source || '—')}</td>
+      <td><span class="dot-pill ${row.opened_whatsapp ? 'needs_info' : 'none'}">${
+        row.opened_whatsapp ? 'opened WhatsApp' : 'never opened WhatsApp'}</span></td>
+      <td>${row.visitor_id
+        ? '<button class="copy" data-vid="' + esc(row.visitor_id) + '">details</button>' : ''}</td>
+    </tr>`).join('') + '</tbody>';
+
+  for (const button of el('unclaimed').querySelectorAll('button[data-vid]')) {
+    button.addEventListener('click', () => {
+      for (const other of document.querySelectorAll('.tab')) other.classList.toggle('on', other.dataset.tab === 'visitors');
+      tab = 'visitors';
+      el('view-people').classList.add('hidden');
+      el('view-unclaimed').classList.add('hidden');
+      el('view-visitors').classList.remove('hidden');
+      inspect(button.dataset.vid);
+    });
+  }
+}
+
+function place(row) {
+  return [row.city, row.region && row.region !== row.city ? row.region : null, row.country]
+    .filter(Boolean).join(', ') || '—';
+}
+
+function machine(row) {
+  const browser = [row.browser, row.browser_version ? String(row.browser_version).split('.')[0] : null]
+    .filter(Boolean).join(' ');
+  return [browser || null, row.os, row.device].filter(Boolean).join(' · ') || '—';
+}
+
+function outcome(visitor) {
+  if (visitor.messaged) return ['qualified', 'messaged'];
+  if (visitor.wa_clicks > 0) return ['needs_info', 'opened WhatsApp'];
+  if (visitor.reached_start || visitor.cta_clicks > 0) return ['needs_info', 'got the link'];
+  return ['none', 'just looked'];
+}
+
+function renderVisitors() {
+  el('tab-visitors').textContent = 'Visitors (' + visitors.length + ')';
+  el('visitors-count').textContent = visitors.length + ' visitors';
+  if (!visitors.length) {
+    el('visitors').innerHTML =
+      '<tr><td><p class="empty">Nothing tracked yet. The landing page needs t.js deployed.</p></td></tr>';
+    return;
+  }
+
+  el('visitors').innerHTML =
+    `<thead><tr><th>Last seen</th><th>Where</th><th>IP</th><th>Device</th>
+      <th>Came from</th><th>Events</th><th>Got to</th><th></th></tr></thead><tbody>` +
+    visitors.map((visitor) => {
+      const [tone, label] = outcome(visitor);
+      const from = visitor.source || (visitor.referrer
+        ? String(visitor.referrer).replace(/^https?:\/\//, '').split('/')[0] : 'direct');
+      return `<tr>
+        <td class="mono dim" title="${esc(stamp(visitor.last_at))}">${esc(when(visitor.last_at))}</td>
+        <td>${esc(place(visitor))}</td>
+        <td class="mono">${esc(visitor.ip || '—')}${
+          visitor.client_ip && visitor.client_ip !== visitor.ip
+            ? '<span class="dim"> / ' + esc(visitor.client_ip) + '</span>' : ''}</td>
+        <td class="mono dim">${esc(machine(visitor))}</td>
+        <td class="mono dim">${esc(from)}</td>
+        <td class="mono dim">${esc(visitor.events)} · ${esc(visitor.wa_clicks)} wa</td>
+        <td><span class="dot-pill ${tone}">${label}</span></td>
+        <td><button class="copy" data-vid="${esc(visitor.vid)}">details</button></td>
+      </tr>`;
+    }).join('') + '</tbody>';
+
+  for (const button of el('visitors').querySelectorAll('button[data-vid]')) {
+    button.addEventListener('click', () => inspect(button.dataset.vid));
+  }
+}
+
+async function inspect(vid) {
+  el('visitor-panel').classList.remove('hidden');
+  el('visitor-title').textContent = vid;
+  el('visitor-detail').innerHTML = '<p class="empty">Loading…</p>';
+
+  const data = await fetch(BASE + '/visitors/' + encodeURIComponent(vid)).then((r) => r.json()).catch(() => null);
+  if (!data || data.error) {
+    el('visitor-detail').innerHTML = '<p class="empty">Nothing recorded for that visitor.</p>';
+    return;
+  }
+  el('visitor-meta').textContent = data.visits.length + ' events';
+  el('visitor-detail').innerHTML = data.visits.map(visitCard).join('');
+}
+
+/** One tracked event, with everything the browser and the lookup gave us. */
+function visitCard(visit) {
+  const client = visit.client || {};
+  const utm = visit.utm || {};
+  return `<div class="convo" style="margin-bottom:14px">
+    <div class="convo-head">
+      <span>${esc(clock(visit.created_at))} · ${esc(visit.kind)}${
+        visit.source ? ' · ' + esc(visit.source) : ''}${visit.token ? ' · ' + esc(visit.token) : ''}</span>
+      <span>${esc(machine(visit))}</span>
+    </div>
+    <div style="padding:16px">
+      <div class="facts" style="margin:0;border-top:none;padding-top:0">
+        ${fact('IP (ours)', visit.ip)}
+        ${fact('IP (ipify)', visit.client_ip)}
+        ${fact('Location', place(visit) === '—' ? null : place(visit))}
+        ${fact('ISP', visit.isp)}
+        ${fact('Browser', [visit.browser, visit.browser_version].filter(Boolean).join(' '))}
+        ${fact('OS', visit.os)}
+        ${fact('Device', visit.device)}
+        ${fact('Screen', visit.screen)}
+        ${fact('Viewport', client.viewport)}
+        ${fact('Timezone', visit.timezone || visit.ip_timezone)}
+        ${fact('Language', visit.language)}
+        ${fact('CPU cores', client.cpuCores)}
+        ${fact('Memory (GB)', client.deviceMemory)}
+        ${fact('Connection', client.connection && client.connection.type)}
+        ${fact('Referrer', visit.referrer)}
+        ${fact('Page', visit.page_url)}
+        ${fact('Campaign', Object.keys(utm).length ? JSON.stringify(utm) : null)}
+        ${fact('Seconds on page', client.secondsOnPage)}
+      </div>
+      <details><summary>Raw browser payload</summary><pre>${esc(JSON.stringify(client, null, 2))}</pre></details>
+      <details><summary>Request headers</summary><pre>${esc(JSON.stringify(visit.headers || {}, null, 2))}</pre></details>
+      <details><summary>Geo lookup</summary><pre>${esc(JSON.stringify(visit.geo || {}, null, 2))}</pre></details>
+    </div>
+  </div>`;
+}
+
+/* ----------------------------------------------------------------- detail */
+
+function fact(label, value) {
+  const empty = value === null || value === undefined || value === '';
+  return `<div class="fact"><span class="label">${label}</span>
+    <span class="value ${empty ? 'empty' : ''}">${esc(empty ? 'not given' : value)}</span></div>`;
+}
+
+async function select(id, silent) {
+  selectedId = id;
+  if (!silent) {
+    renderPeople();
+    el('detail').innerHTML = '<p class="empty">Loading…</p>';
+  }
+
+  const data = await fetch(BASE + '/people/' + id).then((r) => r.json()).catch(() => null);
+  if (selectedId !== id) return;
+  if (!data || data.error) {
+    if (!silent) el('detail').innerHTML = '<p class="empty">Could not load that person.</p>';
+    return;
+  }
+
+  // A background refresh must not yank the page out from under whoever is reading it.
+  const scroll = el('detail').scrollTop;
+  const open = [...el('detail').querySelectorAll('details[open]')].length;
+  renderDetail(data);
+  if (silent) {
+    el('detail').scrollTop = scroll;
+    const sections = el('detail').querySelectorAll('details');
+    for (let i = 0; i < open && i < sections.length; i++) sections[i].open = true;
+  }
+}
+
+function renderDetail(data) {
+  const { contact, conversations, messages, qualifications, tokens, events, visits } = data;
+  const person = people.find((p) => p.id === contact.id) || {};
+  const signup = tokens[0] || {};
+  const latest = qualifications[0];
+  const slots = (latest && latest.extracted) || {};
+
+  const who = nameOf({ ...person, ...signup, extracted: slots, profile_name: contact.profile_name });
+  el('detail-title').textContent = who;
+  el('detail-meta').textContent = conversations.length + ' conversation' + (conversations.length === 1 ? '' : 's');
+
+  const head = `
+    <h3>${esc(who)}</h3>
+    <div class="phone">
+      <span>+${esc(contact.wa_id)}</span>
+      <button class="copy" id="copy-num">copy</button>
+      <a class="copy" href="https://wa.me/${esc(contact.wa_id)}" target="_blank" rel="noopener">open in WhatsApp</a>
+      ${contact.blocked ? '<span class="dot-pill blocked">blocked</span>' : ''}
+    </div>
+    <div class="facts">
+      ${fact('WhatsApp name', contact.profile_name)}
+      ${fact('Name given to clerk', slots.contact_name)}
+      ${fact('Name on signup', signup.contact_name)}
+      ${fact('Company', signup.company_name)}
+      ${fact('Email', signup.email)}
+      ${fact('Came from', signup.source)}
+      ${fact('Signup code', signup.token)}
+      ${fact('Verdict', latest ? (VERDICTS[latest.verdict] || latest.verdict) : null)}
+      ${fact('Matter type', slots.matter_type)}
+      ${fact('Timeline', slots.timeline)}
+      ${fact('First seen', stamp(contact.first_seen_at))}
+      ${fact('Last seen', stamp(contact.last_seen_at))}
+      ${fact('Messages sent', contact.message_count)}
+      ${fact('IP address', person.ip)}
+      ${fact('Location', person.city ? place(person) : null)}
+      ${fact('ISP', person.isp)}
+      ${fact('Device', machine(person) === '—' ? null : machine(person))}
+      ${fact('Number', contact.tenant_name + (contact.is_demo && !/demo/i.test(contact.tenant_name) ? ' (demo)' : ''))}
+    </div>`;
+
+  const threads = conversations.map((conversation) => {
+    const own = messages.filter((m) => m.conversation_id === conversation.id);
+    return `<div class="convo">
+      <div class="convo-head">
+        <span>${esc(clock(conversation.started_at))} · ${esc(own.length)} messages${
+          conversation.signup_token ? ' · ' + esc(conversation.signup_token) : ''}</span>
+        <span class="dot-pill ${esc(conversation.state)}">${
+          esc(VERDICTS[conversation.state] || conversation.state)}</span>
+      </div>
+      <div class="thread">${
+        own.length
+          ? own.map((m) => `<div class="msg ${m.direction === 'in' ? 'in' : 'out'}">${
+              esc(m.body || '[' + m.type + ']')}<time>${esc(clock(m.created_at))}${
+              m.status && m.status !== 'sent' ? ' · ' + esc(m.status) : ''}</time></div>`).join('')
+          : '<p class="empty">No messages in this conversation.</p>'}</div>
+    </div>`;
+  }).join('');
+
+  const history = qualifications.length
+    ? `<div class="scroll-x"><table>
+        <thead><tr><th>When</th><th>Verdict</th><th>Matter</th><th>Answered</th><th>Model</th></tr></thead>
+        <tbody>${qualifications.map((q) => `<tr>
+          <td class="mono dim">${esc(clock(q.created_at))}</td>
+          <td><span class="dot-pill ${esc(q.verdict)}">${esc(VERDICTS[q.verdict] || q.verdict)}</span></td>
+          <td>${esc(q.matter_type || '—')}</td>
+          <td class="mono">${esc(q.score ?? '—')}</td>
+          <td class="mono dim">${esc(q.model || 'fallback')}</td>
+        </tr>`).join('')}</tbody></table></div>
+       <details><summary>Everything the clerk extracted</summary><pre>${
+         esc(JSON.stringify(qualifications[0].extracted, null, 2))}</pre></details>`
+    : '<p class="empty">The clerk has not reached a verdict for this person yet.</p>';
+
+  const trail = events.length
+    ? `<details><summary>Audit trail (${events.length} events)</summary><pre>${
+        esc(events.map((e) => clock(e.created_at) + '  ' + e.kind + '  ' + (e.ref || '')).join('\n'))}</pre></details>`
+    : '';
+
+  const arrival = (visits || []).length
+    ? (visits || []).map(visitCard).join('')
+    : '<p class="empty">No browser details captured — they messaged the number without going through the site.</p>';
+
+  el('detail').innerHTML = head +
+    '<div class="section-title">Conversation</div>' + (threads || '<p class="empty">No conversations yet.</p>') +
+    '<div class="section-title">Qualification</div>' + history +
+    '<div class="section-title">How they arrived</div>' + arrival +
+    (trail ? '<div class="section-title">Behind the scenes</div>' + trail : '');
+
+  const copy = el('copy-num');
+  if (copy) {
+    copy.addEventListener('click', () => {
+      navigator.clipboard.writeText('+' + contact.wa_id).then(() => {
+        copy.textContent = 'copied';
+        setTimeout(() => { copy.textContent = 'copy'; }, 1400);
+      }, () => {});
+    });
+  }
+}
+
+/* ------------------------------------------------------------------- wiring */
+
+el('csv').href = BASE + '/leads.csv';
+
+el('search').addEventListener('input', (event) => {
+  filter = event.target.value.trim().toLowerCase();
+  renderPeople();
+});
+
+for (const button of document.querySelectorAll('.tab')) {
+  button.addEventListener('click', () => {
+    tab = button.dataset.tab;
+    for (const other of document.querySelectorAll('.tab')) other.classList.toggle('on', other === button);
+    el('view-people').classList.toggle('hidden', tab !== 'people');
+    el('view-unclaimed').classList.toggle('hidden', tab !== 'unclaimed');
+    el('view-visitors').classList.toggle('hidden', tab !== 'visitors');
+  });
+}
+
+async function refresh() {
+  try {
+    const data = await fetch(BASE + '/data').then((r) => r.json());
+    people = data.people || [];
+    unclaimed = data.unclaimed || [];
+    visitors = data.visitors || [];
+    renderStats(data.stats || {});
+    renderPeople();
+    renderUnclaimed();
+    renderVisitors();
+    el('live-label').textContent = 'Live';
+  } catch (error) {
+    el('live-label').textContent = 'Offline';
+  }
+}
+
+refresh();
+setInterval(refresh, 10000);
+// Keep the open transcript current without stealing the reader's scroll.
+setInterval(() => { if (selectedId && !document.hidden) select(selectedId, true); }, 15000);
+</script>
+</body>
+</html>

@@ -34,7 +34,13 @@ dashboard queries live in Postgres where they are queryable.
 | `src/qualify.ts` | The three intake questions and the verdict rule. |
 | `src/gemini.ts` | Gemini client: structured output, retry, model fallback. |
 | `src/tokens.ts` | `CLK-XXXXXX` signup codes and wa.me deep links. |
+| `src/admin.ts` | Owner-only dashboard queries, behind the `ADMIN_TOKEN` path. |
+| `src/visits.ts` | Visitor capture: IP, headers, geo lookup, rate limiting. |
+| `src/ua.ts` | User-agent parsing. No dependency; client hints beat it when offered. |
+| `public/t.js` | The tracker both the landing page and the session page load. |
+| `db/002_visits.sql` | The `visits` table. Apply with `db/migrate.mjs`. |
 | `public/session.html` | The live demo dashboard served at `/s/:token`. |
+| `public/admin.html` | The owner dashboard served at `/admin/:token`. |
 | `public/book.html` | Placeholder for `/book`; set `BOOKING_URL` to redirect instead. |
 | `n8n/247clerk-inbound.json` | The n8n workflow. Secret is a placeholder — fill it in n8n. |
 
@@ -58,6 +64,72 @@ polls `/api/session/:token` every 2s.
 Anyone holding the code can view that conversation — it is the visitor's own
 chat and the code is single-use random, but it is not authentication. Real
 login (magic link) belongs with per-tenant onboarding, not the demo.
+
+## Visitor capture
+
+Every arrival is recorded in `visits`, so the funnel is visible before anyone
+says a word:
+
+```
+page.view      landed on 247clerk.com
+cta.click      pressed "Try it on WhatsApp"      ─┐ t.js, in the browser
+session.view   landed on /s/CLK-XXXXXX            │
+wa.click       pressed "Open WhatsApp"           ─┘
+start.view     hit /start                          server-side, always recorded
+```
+
+`public/t.js` is loaded by `index.html` on the marketing site and by
+`session.html` here. It wires itself to every link pointing at `/start` or
+`wa.me`, so a new CTA is tracked without touching the tracker. On click it
+stamps the link with `?vid=`, which is how a click on 247clerk.com and the token
+minted a second later on app.247clerk.com are known to be the same person.
+
+Two halves make up a row. The browser posts what only it knows to `/api/track` —
+the [ipify](https://www.ipify.org/) answer, screen, viewport, timezone, language,
+CPU cores, memory, connection type, referrer, UTM, and the high-entropy client
+hints that carry the real browser and OS version. The server adds what the
+browser could lie about: the connecting IP from `X-Forwarded-For`, the request
+headers, and a geo lookup of that IP (city, region, country, ISP) through
+`GEOIP_URL`. The lookup happens after the row is written, so nothing a visitor
+waits on ever blocks on a third party.
+
+`/api/track` is public by necessity — it is called before anyone has identified
+themselves. It is rate limited to 120 requests per minute per IP, capped at 32KB
+a request, and rejects any `kind` outside the five above. Beacons are sent as
+`text/plain` so they never trigger a CORS preflight and a click is never delayed.
+
+Bots and link previews are marked `device = 'bot'` rather than dropped, so the
+funnel is not quietly inflated by Facebook and Slack fetching the page.
+
+Set `GEOIP_ENABLED=false` to stop sending IPs to the lookup provider; everything
+else keeps working. IP and device details are personal information under POPIA —
+`privacy-policy.html` should say that you collect them and why.
+
+## The admin dashboard
+
+`https://app.247clerk.com/admin/<ADMIN_TOKEN>` — everyone who has messaged the
+demo number, their WhatsApp number and profile name, every message in both
+directions, the verdict the clerk reached and what it extracted, plus the links
+that were issued and never used. `Export CSV` gives one row per person.
+
+Three tabs: **People** (anyone who messaged, with their transcript and the
+browser they arrived from), **Unused links** (issued and never used, now showing
+where each one came from and whether they got as far as opening WhatsApp), and
+**Visitors** (everyone who landed on the page at all, with IP, city, ISP, device
+and every raw detail captured).
+
+The UUID in the path is the only credential, so treat the link like a password.
+A wrong token gets the same 302 to the marketing site as any unknown path, so
+the route is not discoverable by probing, and the page is `noindex` and
+`no-store`. Set the token with:
+
+```bash
+node -e "console.log(crypto.randomUUID())"   # put it in .env as ADMIN_TOKEN
+```
+
+Leave `ADMIN_TOKEN` empty and the routes do not exist at all. Rotating it is a
+one-line `.env` change plus `systemctl restart 247clerk`; the old link dies
+immediately.
 
 ## Infrastructure on this host
 
@@ -115,6 +187,12 @@ outside the window needs a pre-approved template.
 npm install
 npm run build
 node --env-file=.env dist/index.js
+```
+
+Migrations are idempotent and applied one file at a time:
+
+```bash
+node --env-file=.env db/migrate.mjs db/002_visits.sql
 ```
 
 Copy `.env.example` to `.env` first. Never commit `.env`.

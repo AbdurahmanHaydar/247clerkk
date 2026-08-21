@@ -93,6 +93,7 @@ h1{font-family:var(--display);font-size:clamp(26px,4vw,36px);line-height:1.15;fo
   .thread{max-height:none}
 }
 </style>
+<script async src="/t.js"></script>
 </head>
 <body>
 
@@ -117,7 +118,7 @@ h1{font-family:var(--display);font-size:clamp(26px,4vw,36px);line-height:1.15;fo
           <li><span class="n">2</span><span>Send the message that's already typed for you — it carries your code <span class="code" id="code-inline">—</span>.</span></li>
           <li><span class="n">3</span><span>Then describe a matter, like a client would. Watch this page.</span></li>
         </ol>
-        <a class="btn" id="wa-btn" href="#" rel="noopener">Open WhatsApp</a>
+        <a class="btn" id="wa-btn" href="#" rel="noopener" data-src="session-button">Open WhatsApp</a>
         <div class="waiting"><span class="pulse" style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block"></span> Waiting for your first message…</div>
       </div>
       <figure class="qr">

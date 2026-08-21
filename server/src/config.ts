@@ -15,10 +15,18 @@ export const config = {
   geminiModel: process.env.GEMINI_MODEL ?? "gemini-3.7-flash",
   geminiFallbackModel: process.env.GEMINI_FALLBACK_MODEL ?? "gemini-2.5-flash",
   demoWaNumber: required("DEMO_WA_NUMBER"),
+  /** Secret path segment for the owner-only dashboard at /admin/:token.
+   *  Unset means the admin routes don't exist at all. */
+  adminToken: process.env.ADMIN_TOKEN ?? "",
   publicAppUrl: process.env.PUBLIC_APP_URL ?? "https://app.247clerk.com",
   /** Set to a Cal.com (or similar) link and /book redirects there instead of
    *  serving the placeholder page. */
   bookingUrl: process.env.BOOKING_URL ?? "",
+  /** Turns the IP -> city/ISP lookup on /api/track on and off. The visitor's
+   *  IP is the only thing sent to the provider. */
+  geoEnabled: (process.env.GEOIP_ENABLED ?? "true") !== "false",
+  /** {ip} is substituted. ipwho.is is free, https and needs no key. */
+  geoUrl: process.env.GEOIP_URL ?? "https://ipwho.is/{ip}",
   /** Free messages a single phone number gets on the shared demo number. */
   demoMessageCap: Number(process.env.DEMO_MESSAGE_CAP ?? 25),
 };
