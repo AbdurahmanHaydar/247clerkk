@@ -7,7 +7,8 @@
 Key facts:
 - Market: South Africa. Pricing in rand.
 - Channel: WhatsApp (not voice).
-- Plans: Front Desk R349/month; Full Shift R649/month. 14-day free trial on both.
+- Plans: Front Desk R495/month (100 enquiries); Full Shift R1,195/month (300 enquiries); Chambers R2,495/month (800 enquiries). 14-day free trial on all three.
+- Metering: one enquiry is one client conversation, however many messages it takes. Overage is billed per enquiry, never throttled. Meta's per-message WhatsApp fees are included in the plan.
 - Setup time: about 15 minutes. Nothing for clients to install.
 - Integrations: Google Calendar, PayFast, Stripe.
 - Contact: admin@247clerk.com

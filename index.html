@@ -105,15 +105,15 @@
         {
           "@type": "Offer",
           "name": "Front Desk",
-          "price": "349",
+          "price": "495",
           "priceCurrency": "ZAR",
           "category": "subscription",
           "url": "https://247clerk.com/#pricing",
           "availability": "https://schema.org/InStock",
-          "description": "Unlimited process and fee questions answered, up to 100 consultations booked a month, matter screening, automatic reminders, English plus one extra language.",
+          "description": "100 enquiries handled a month, process, fee and turnaround questions answered, matter screening and follow-ups, up to 100 consultations booked, automatic reminders, English plus one extra language. Extra enquiries R3.50 each.",
           "priceSpecification": {
             "@type": "UnitPriceSpecification",
-            "price": "349",
+            "price": "495",
             "priceCurrency": "ZAR",
             "unitText": "MONTH",
             "billingDuration": 1,
@@ -123,15 +123,33 @@
         {
           "@type": "Offer",
           "name": "Full Shift",
-          "price": "649",
+          "price": "1195",
           "priceCurrency": "ZAR",
           "category": "subscription",
           "url": "https://247clerk.com/#pricing",
           "availability": "https://schema.org/InStock",
-          "description": "Everything in Front Desk plus unlimited consultations, practice-wide Google Calendar sync, consultation fee collection, intake dashboards, conflict-check name surfacing, all languages and a weekly intake report.",
+          "description": "300 enquiries handled a month plus everything in Front Desk: unlimited consultations booked, practice-wide Google Calendar sync, consultation fee collection, intake dashboards, conflict-check name surfacing, all languages and a weekly intake report. Extra enquiries R3.00 each.",
           "priceSpecification": {
             "@type": "UnitPriceSpecification",
-            "price": "649",
+            "price": "1195",
+            "priceCurrency": "ZAR",
+            "unitText": "MONTH",
+            "billingDuration": 1,
+            "billingIncrement": 1
+          }
+        },
+        {
+          "@type": "Offer",
+          "name": "Chambers",
+          "price": "2495",
+          "priceCurrency": "ZAR",
+          "category": "subscription",
+          "url": "https://247clerk.com/#pricing",
+          "availability": "https://schema.org/InStock",
+          "description": "800 enquiries handled a month plus everything in Full Shift: multiple numbers and practitioners under one account, routing by practice area and fee earner, POPIA operator agreement and custom retention, priority support with a named contact. Extra enquiries R2.50 each.",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "2495",
             "priceCurrency": "ZAR",
             "unitText": "MONTH",
             "billingDuration": 1,
@@ -146,6 +164,30 @@
       "isPartOf": { "@id": "https://247clerk.com/#webpage" },
       "inLanguage": "en-ZA",
       "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What counts as an enquiry?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "One client conversation, start to finish — the screening questions, the fee answer, the booking, the payment link and the reminders that follow. Not one message. A typical after-hours intake runs eight to twelve messages and counts as one enquiry. The dashboard shows the running count."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What happens if I go over my monthly enquiries?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Nothing breaks. The clerk keeps working and the extra enquiries appear on next month's invoice at your plan's rate. A missed instruction costs more than an overage, so 247clerk does not throttle. A monthly cap can be set in the dashboard instead."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I have to pay Meta separately for WhatsApp messages?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. From 1 October 2026 Meta charges roughly 12c for every message a business sends on WhatsApp, and more for clients abroad. That is built into the plan price. You will never receive a separate WhatsApp bill from 247clerk or from Meta."
+          }
+        },
         {
           "@type": "Question",
           "name": "Does 247clerk give legal, tax or financial advice?",
@@ -431,8 +473,8 @@ h2{font-family:var(--display);font-weight:800;font-size:clamp(1.8rem,3.4vw,2.6re
 
 /* ---------- pricing ---------- */
 .pricing{padding:20px 0 100px}
-.price-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:28px;margin-top:48px;max-width:820px;margin-left:auto;margin-right:auto}
-.plan{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:36px 32px;display:flex;flex-direction:column;transition:transform .25s ease,box-shadow .25s ease}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:48px;margin-left:auto;margin-right:auto}
+.plan{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:34px 28px;display:flex;flex-direction:column;transition:transform .25s ease,box-shadow .25s ease}
 .plan:hover{transform:translateY(-4px);box-shadow:0 24px 44px -30px rgba(16,34,28,.4)}
 .plan.featured{border:2px solid var(--green);position:relative;background:linear-gradient(180deg,#FFFFFF,#F3FBF5);box-shadow:0 30px 60px -38px rgba(31,168,85,.55)}
 .plan .badge{position:absolute;top:-13px;left:28px;background:var(--green);color:#fff;font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;padding:4px 12px;border-radius:99px}
@@ -443,6 +485,16 @@ h2{font-family:var(--display);font-weight:800;font-size:clamp(1.8rem,3.4vw,2.6re
 .plan li{padding:7px 0 7px 28px;position:relative;color:var(--muted);font-size:.96rem}
 .plan li::before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:700}
 .plan .btn{text-align:center}
+/* The overage line is a price, not a feature — a tick would oversell it. */
+.plan li.meta{color:var(--ink);opacity:.75;font-size:.88rem;margin-top:6px;padding-top:12px;border-top:1px dashed var(--line)}
+.plan li.meta::before{content:"+";color:var(--muted);font-weight:600}
+.price-note{max-width:780px;margin:30px auto 0;text-align:center;color:var(--muted);font-size:.9rem;line-height:1.7}
+.price-note + .price-note{margin-top:14px}
+
+/* Three plans need the room; two abreast is the first thing to give up. */
+@media (max-width:1060px){
+  .price-grid{grid-template-columns:repeat(2,1fr);max-width:760px}
+}
 
 /* ---------- faq ---------- */
 .faq{padding:0 0 100px}
@@ -515,7 +567,7 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
   .phone{margin:0 auto}
   .steps{grid-template-columns:1fr}
   .practice-grid{grid-template-columns:1fr}
-  .price-grid{grid-template-columns:1fr}
+  .price-grid{grid-template-columns:1fr;max-width:460px}
   .ledger-row{grid-template-columns:86px 1fr;row-gap:6px}
   .ledger-row .tag{grid-column:2;justify-self:start}
   .nav-links a:not(.btn){display:none}
@@ -813,39 +865,59 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
     <div class="section-head reveal" style="margin-left:auto;margin-right:auto;text-align:center">
       <span class="kicker">Pricing</span>
       <h2>Less than one billable hour</h2>
-      <p>Simple monthly pricing. Cancel whenever. Every plan starts with a 14-day free trial.</p>
+      <p>Simple monthly pricing, by enquiry &mdash; not by the message. Cancel whenever. Every plan starts with a 14-day free trial.</p>
     </div>
     <div class="price-grid">
       <div class="plan reveal">
         <h3>Front Desk</h3>
-        <div class="price">R349<span>/month</span></div>
+        <div class="price">R495<span>/month</span></div>
         <ul>
-          <li>Unlimited process &amp; fee questions answered</li>
-          <li>Up to 100 consultations booked a month</li>
+          <li>100 enquiries handled a month</li>
+          <li>Process, fee and turnaround questions answered</li>
           <li>Matter screening questions &amp; follow-ups</li>
+          <li>Up to 100 consultations booked</li>
           <li>Automatic reminders and document lists</li>
           <li>Escalates anything legal straight to you</li>
           <li>English + 1 extra language</li>
+          <li class="meta">Extra enquiries R3.50 each</li>
         </ul>
         <a href="#signup" class="btn btn-ghost">Start free trial</a>
       </div>
       <div class="plan featured reveal">
         <span class="badge">Most popular</span>
         <h3>Full Shift</h3>
-        <div class="price">R649<span>/month</span></div>
+        <div class="price">R1,195<span>/month</span></div>
         <ul>
+          <li>300 enquiries handled a month</li>
           <li>Everything in Front Desk</li>
-          <li>Unlimited consultations</li>
+          <li>Unlimited consultations booked</li>
           <li>Google Calendar sync across the whole practice</li>
           <li>Consultation fees via PayFast, Stripe &amp; more</li>
           <li>Qualified &amp; out-of-scope intake dashboards</li>
           <li>Party names surfaced for conflict checks</li>
           <li>All languages your clients use</li>
           <li>Weekly intake report</li>
+          <li class="meta">Extra enquiries R3.00 each</li>
         </ul>
         <a href="#signup" class="btn btn-green">Start free trial</a>
       </div>
+      <div class="plan reveal">
+        <h3>Chambers</h3>
+        <div class="price">R2,495<span>/month</span></div>
+        <ul>
+          <li>800 enquiries handled a month</li>
+          <li>Everything in Full Shift</li>
+          <li>Multiple numbers and practitioners under one account</li>
+          <li>Routing by practice area and fee earner</li>
+          <li>POPIA operator agreement and custom retention</li>
+          <li>Priority support with a named contact</li>
+          <li class="meta">Extra enquiries R2.50 each</li>
+        </ul>
+        <a href="mailto:admin@247clerk.com?subject=Chambers%20plan" class="btn btn-ghost">Talk to us</a>
+      </div>
     </div>
+    <p class="price-note reveal">Pay annually and get two months free. One enquiry is one client conversation, however many messages it takes &mdash; up to 15 clerk replies. Enquiries from outside South Africa count as two. Your clerk never stops mid-conversation because you&rsquo;ve hit a limit; set a monthly cap in your dashboard and we&rsquo;ll tell you at 80%.</p>
+    <p class="price-note reveal">From 1 October 2026 Meta charges businesses for every WhatsApp reply. It&rsquo;s included in your plan &mdash; no separate WhatsApp bill to reconcile.</p>
   </div>
 </section>
 
@@ -857,6 +929,18 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
       <p>Answering these is literally our whole thing.</p>
     </div>
     <div class="faq-list reveal">
+      <details>
+        <summary>What counts as an enquiry?</summary>
+        <div class="a">One client conversation, start to finish &mdash; the screening questions, the fee answer, the booking, the payment link and the reminders that follow. Not one message. A typical after-hours intake runs eight to twelve messages and counts as one enquiry. The dashboard shows the running count.</div>
+      </details>
+      <details>
+        <summary>What happens if I go over?</summary>
+        <div class="a">Nothing breaks. Your clerk keeps working and the extra enquiries appear on next month&rsquo;s invoice at your plan&rsquo;s rate. A missed instruction costs more than an overage, so we don&rsquo;t throttle. If you&rsquo;d rather cap it, set a limit in the dashboard.</div>
+      </details>
+      <details>
+        <summary>Do I have to pay Meta separately?</summary>
+        <div class="a">No. From 1 October 2026 Meta charges roughly 12c for every message a business sends on WhatsApp, and more for clients abroad. That&rsquo;s built into your plan. You&rsquo;ll never get a WhatsApp bill from us or from Meta.</div>
+      </details>
       <details>
         <summary>Does it give legal, tax or financial advice?</summary>
         <div class="a">No — and that is deliberate. Your clerk is a clerk, not a practitioner. It answers process, fee, document and availability questions, and it screens the matter. The moment an enquiry calls for an opinion on the merits, it says so plainly, tells the client an admitted practitioner will advise, and puts the conversation on your desk. It is built to hand over early rather than guess.</div>
