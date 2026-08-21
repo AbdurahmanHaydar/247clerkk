@@ -41,7 +41,9 @@ const KEEP_HEADERS = [
   "x-forwarded-for",
   "x-real-ip",
   "cf-connecting-ip",
+  "true-client-ip",
   "cf-ipcountry",
+  "cf-ray",
   "accept-encoding",
 ];
 
@@ -69,8 +71,8 @@ export async function recordVisit(c: Context, input: VisitInput): Promise<void> 
   const rows = await query<{ id: string }>(
     `insert into visits (visitor_id, token, kind, source, ip, client_ip, user_agent,
                          browser, browser_version, os, device, language, timezone, screen,
-                         referrer, page_url, utm, client, headers)
-     values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)
+                         referrer, page_url, utm, client, headers, country_code)
+     values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)
      returning id`,
     [
       str(input.visitorId),
@@ -93,6 +95,7 @@ export async function recordVisit(c: Context, input: VisitInput): Promise<void> 
       json(client["utm"]),
       json(trim(client)),
       json(headers),
+      c.req.header("cf-ipcountry") ?? null,
     ],
   );
 
@@ -110,16 +113,26 @@ export function recordVisitSafely(c: Context, input: VisitInput): void {
 /* ------------------------------------------------------------------ the IP */
 
 /**
- * Caddy sits in front, so the socket address is always 127.0.0.1. The left-most
- * entry of X-Forwarded-For is the visitor; the rest are proxies.
+ * Caddy sits in front, so the socket address is never the visitor.
+ *
+ * Cloudflare fronts app.247clerk.com, and there X-Forwarded-For arrives holding
+ * a Cloudflare edge address, not the visitor — CF-Connecting-IP is the only
+ * header with the real one. CF-Ray tells us the request genuinely came through
+ * Cloudflare rather than someone hand-writing the header at the origin.
  */
 export function clientIp(c: Context): string | null {
+  if (c.req.header("cf-ray")) {
+    const cf = c.req.header("cf-connecting-ip") ?? c.req.header("true-client-ip");
+    if (cf) return normalise(cf.trim());
+  }
+
+  // Direct through Caddy: the left-most entry is the visitor, the rest proxies.
   const forwarded = c.req.header("x-forwarded-for");
   if (forwarded) {
     const first = forwarded.split(",")[0]?.trim();
     if (first) return normalise(first);
   }
-  const real = c.req.header("cf-connecting-ip") ?? c.req.header("x-real-ip");
+  const real = c.req.header("x-real-ip");
   if (real) return normalise(real.trim());
 
   // Direct hit (local development, or n8n on the docker bridge).
