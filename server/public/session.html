@@ -39,6 +39,7 @@ h1{font-family:var(--display);font-size:clamp(26px,4vw,36px);line-height:1.15;fo
   border-radius:var(--radius);padding:14px 16px;cursor:pointer;font-family:var(--body);color:var(--ink);
   transition:.15s ease}
 .tmpl:hover{border-color:var(--muted)}
+.tmpl:focus-visible{outline:2px solid var(--green);outline-offset:2px}
 .tmpl.on{border-color:var(--green);background:var(--bubble)}
 .tmpl b{display:block;font-size:15.5px;font-weight:600}
 .tmpl span{display:block;font-size:13px;color:var(--muted);line-height:1.45;margin-top:3px}
@@ -49,10 +50,23 @@ h1{font-family:var(--display);font-size:clamp(26px,4vw,36px);line-height:1.15;fo
 .fld{display:grid;gap:6px}
 .fld > label{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;
   color:var(--muted)}
-.fld textarea,.fld input,.fld select{font-family:var(--body);font-size:15px;color:var(--ink);
-  background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
-.fld textarea{resize:vertical;min-height:58px;line-height:1.5}
-.fld textarea:focus,.fld input:focus,.fld select:focus{outline:2px solid var(--bubble);border-color:var(--green)}
+/* Every control in the editor, labelled field and question card alike. Scoping
+   this to .fld alone left the question textareas and selects on browser
+   defaults, which is a different font in a different box. */
+.fld textarea,.fld input,.fld select,
+.q textarea,.q select{font-family:var(--body);font-size:15px;color:var(--ink);line-height:1.5;
+  background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;
+  display:block;-webkit-appearance:none;appearance:none}
+.fld textarea,.q textarea{resize:vertical;min-height:58px}
+/* Selects lose their native arrow to appearance:none, so draw one back on. */
+.fld select,.q select{padding-right:34px;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%235C6B63' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;background-size:11px}
+/* On a question card the paper ground is the card itself, so the controls sit
+   on white to stay legible. */
+.q textarea,.q select{background-color:var(--card)}
+.fld textarea:focus,.fld input:focus,.fld select:focus,
+.q textarea:focus,.q select:focus{outline:2px solid var(--bubble);border-color:var(--green)}
 
 .qs{display:grid;gap:11px}
 .q{border:1px solid var(--line);border-radius:12px;background:var(--paper);padding:13px 14px;display:grid;gap:11px}
@@ -420,22 +434,27 @@ function toFlow(draft) {
 
 function renderTemplates() {
   el('templates').innerHTML = templates.map((t) => `
-    <button class="tmpl ${t.id === templateId ? 'on' : ''}" data-t="${esc(t.id)}" type="button">
+    <button class="tmpl ${t.id === templateId ? 'on' : ''}" data-t="${esc(t.id)}" type="button"
+      aria-pressed="${t.id === templateId}">
       <b>${esc(t.name)}</b><span>${esc(t.tagline)}</span>
     </button>`).join('');
 
-  for (const button of el('templates').querySelectorAll('.tmpl')) {
-    button.addEventListener('click', () => {
-      const picked = templates.find((t) => t.id === button.dataset.t);
-      if (!picked) return;
-      if (dirtyDraft && !confirm('Replace what you have written with the ' + picked.name + ' starter?')) return;
-      templateId = picked.id;
-      draft = toDraft(picked.flow);
-      dirtyDraft = false;
-      renderBuilder();
-    });
-  }
 }
+
+// Delegated, so it survives renderTemplates() replacing the buttons underneath it.
+el('templates').addEventListener('click', (event) => {
+  const button = event.target.closest('.tmpl');
+  if (!button) return;
+  const picked = templates.find((t) => t.id === button.dataset.t);
+  if (!picked) return;
+  if (dirtyDraft && !confirm('Replace what you have written with the ' + picked.name + ' starter?')) return;
+
+  templateId = picked.id;
+  draft = toDraft(picked.flow);
+  dirtyDraft = false;
+  renderTemplates();   // the highlight lives here, not in the editor
+  renderBuilder();
+});
 
 let dirtyDraft = false;
 
