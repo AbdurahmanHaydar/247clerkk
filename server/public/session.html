@@ -33,6 +33,74 @@ main{padding:34px 0 64px}
 h1{font-family:var(--display);font-size:clamp(26px,4vw,36px);line-height:1.15;font-weight:800;letter-spacing:-.01em}
 .sub{color:var(--muted);margin-top:8px;max-width:56ch}
 
+/* ---------- build state ---------- */
+.tmpls{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.tmpl{flex:1 1 190px;text-align:left;background:var(--card);border:1.5px solid var(--line);
+  border-radius:var(--radius);padding:14px 16px;cursor:pointer;font-family:var(--body);color:var(--ink);
+  transition:.15s ease}
+.tmpl:hover{border-color:var(--muted)}
+.tmpl.on{border-color:var(--green);background:var(--bubble)}
+.tmpl b{display:block;font-size:15.5px;font-weight:600}
+.tmpl span{display:block;font-size:13px;color:var(--muted);line-height:1.45;margin-top:3px}
+
+.builder{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:22px;margin-top:22px;
+  align-items:start}
+.editor{padding:20px;display:grid;gap:18px}
+.fld{display:grid;gap:6px}
+.fld > label{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--muted)}
+.fld textarea,.fld input,.fld select{font-family:var(--body);font-size:15px;color:var(--ink);
+  background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+.fld textarea{resize:vertical;min-height:58px;line-height:1.5}
+.fld textarea:focus,.fld input:focus,.fld select:focus{outline:2px solid var(--bubble);border-color:var(--green)}
+
+.qs{display:grid;gap:11px}
+.q{border:1px solid var(--line);border-radius:12px;background:var(--paper);padding:13px 14px;display:grid;gap:11px}
+.q-top{display:flex;align-items:center;gap:9px}
+.q-top .n{font-family:var(--mono);font-size:11px;color:var(--muted);flex:none}
+.q-top .sp{flex:1}
+.q-top button{border:none;background:none;color:var(--muted);cursor:pointer;font-size:14px;padding:3px 6px;
+  border-radius:6px;line-height:1}
+.q-top button:hover{background:var(--bubble);color:var(--ink)}
+.q-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opts{display:grid;gap:7px}
+.opt{display:flex;gap:8px;align-items:center}
+.opt input[type=text]{flex:1;font-family:var(--body);font-size:14px;border:1px solid var(--line);
+  border-radius:8px;padding:7px 10px;background:var(--card);color:var(--ink)}
+.opt label{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);white-space:nowrap;
+  cursor:pointer;font-family:var(--mono)}
+.opt .x{border:none;background:none;color:var(--muted);cursor:pointer;padding:2px 5px}
+.opt .x:hover{color:#8C2F2F}
+.addq{background:none;border:1px dashed var(--line);border-radius:10px;padding:10px;cursor:pointer;
+  font-family:var(--body);font-size:14px;color:var(--muted);width:100%}
+.addq:hover{border-color:var(--green);color:var(--green-dark)}
+.fld .tip{font-size:12.5px;color:var(--muted);line-height:1.45}
+.fld .tip code{font-family:var(--mono);font-size:11.5px;background:var(--bubble);
+  border-radius:4px;padding:1px 5px}
+
+.preview{position:sticky;top:86px}
+.pv{padding:18px;display:flex;flex-direction:column;gap:8px;background:#FBFCF9;max-height:64vh;overflow-y:auto}
+.pv .b{max-width:84%;padding:9px 13px;border-radius:14px;font-size:14.5px;white-space:pre-wrap;line-height:1.5}
+.pv .b.clerk{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px}
+.pv .them{align-self:flex-end;font-family:var(--mono);font-size:11px;color:var(--muted);
+  background:var(--bubble);border-radius:14px;border-bottom-right-radius:4px;padding:6px 12px;opacity:.85}
+.pv .fin{align-self:flex-start;background:var(--bubble);border:1px solid var(--green);border-radius:14px;
+  border-bottom-left-radius:4px;padding:9px 13px;font-size:14.5px;white-space:pre-wrap}
+
+.buildbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:22px}
+.buildbar .note{font-size:13.5px;color:var(--muted)}
+.err{background:#FCEDED;border:1px solid #E7BDBD;color:#8C2F2F;border-radius:12px;padding:12px 16px;
+  margin-top:16px;font-size:14.5px}
+.err ul{margin:6px 0 0 18px}
+.editlink{background:none;border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer;
+  font-family:var(--body);font-size:13.5px;color:var(--muted)}
+.editlink:hover{border-color:var(--muted);color:var(--ink)}
+@media (max-width:860px){
+  .builder{grid-template-columns:1fr}
+  .preview{position:static}
+  .q-row{grid-template-columns:1fr}
+}
+
 /* ---------- waiting state ---------- */
 .connect{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px;margin-top:26px;
   display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px;align-items:center}
@@ -106,8 +174,50 @@ h1{font-family:var(--display);font-size:clamp(26px,4vw,36px);line-height:1.15;fo
 
 <main class="wrap">
 
+  <!-- ================= build ================= -->
+  <section id="view-build" class="hidden">
+    <h1>First — what should your clerk ask?</h1>
+    <p class="sub">Pick the closest trade, change any line you like, then test it on WhatsApp.
+    Nothing here is permanent — you can come back and rewrite it mid-conversation.</p>
+
+    <div class="tmpls" id="templates"></div>
+
+    <div class="builder">
+      <div class="panel">
+        <div class="panel-head"><h2>Your questions</h2><span class="meta" id="q-count">—</span></div>
+        <div class="editor">
+          <div class="fld">
+            <label for="greeting">First thing it says</label>
+            <textarea id="greeting" maxlength="320"></textarea>
+          </div>
+          <div class="qs" id="qs"></div>
+          <button class="addq" id="add-q" type="button">+ Add a question</button>
+          <div class="fld">
+            <label for="ending">When they've answered everything</label>
+            <textarea id="ending" maxlength="320"></textarea>
+            <span class="tip">Write <code>{{name}}</code> to drop in their name, and
+              <code>{{#name}}</code>…<code>{{/name}}</code> around any words that should
+              only appear when you actually have it.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel preview">
+        <div class="panel-head"><h2>How it will read</h2><span class="meta">WhatsApp</span></div>
+        <div class="pv" id="pv"></div>
+      </div>
+    </div>
+
+    <div id="build-error" class="err hidden"></div>
+
+    <div class="buildbar">
+      <button class="btn" id="build-save" type="button">Save and open WhatsApp</button>
+      <span class="note" id="build-note">Takes effect immediately — no account, nothing to install.</span>
+    </div>
+  </section>
+
   <!-- ================= waiting ================= -->
-  <section id="view-connect">
+  <section id="view-connect" class="hidden">
     <h1>Your clerk is on duty.</h1>
     <p class="sub">Send it a message the way one of your clients would. Everything it hears shows up on this page, live.</p>
 
@@ -126,13 +236,15 @@ h1{font-family:var(--display);font-size:clamp(26px,4vw,36px);line-height:1.15;fo
         <figcaption>Scan with your phone</figcaption>
       </figure>
     </div>
-    <p class="hint">This page stays live — keep it open while you chat.</p>
+    <p class="hint">This page stays live — keep it open while you chat.
+      <button class="editlink" id="edit-1" type="button">Edit the questions</button></p>
   </section>
 
   <!-- ================= connected ================= -->
   <section id="view-live" class="hidden">
     <h1>Live intake</h1>
-    <p class="sub">This is exactly what your clients would see, and what lands on your desk in the morning.</p>
+    <p class="sub">This is exactly what your clients would see, and what lands on your desk in the morning.
+      <button class="editlink" id="edit-2" type="button">Edit the questions</button></p>
 
     <div class="grid">
       <div class="panel">
@@ -230,6 +342,300 @@ function renderVerdict(qualification) {
   el('cta').classList.toggle('hidden', verdict !== 'qualified');
 }
 
+
+/* ========================= the visitor's own conversation ========================= */
+/* A deliberately small builder: a greeting, some questions, one ending. It writes
+   the same flow format the engine runs, so what you compose here is literally what
+   answers your WhatsApp message a moment later. */
+
+const FIELDS = [
+  ['text', 'Anything they write'],
+  ['choice', 'Pick from a list'],
+  ['email', 'An email address'],
+  ['phone', 'A phone number'],
+  ['number', 'A number'],
+];
+
+let templates = [];
+let templateId = null;
+let draft = null;      // { greeting, questions:[…], done, nofit }
+let saving = false;
+
+const esc = (v) => String(v == null ? '' : v).replace(/[<>&"]/g, (c) => (
+  { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]
+));
+
+/* ------------------------------------------------- flow <-> draft conversion */
+
+/* The builder edits a simple shape; the server stores a flow. These two keep the
+   round trip honest, so a flow saved here reopens as the same draft. */
+
+function toDraft(flow) {
+  const steps = flow.steps || [];
+  const greet = steps.find((s) => s.type === 'message');
+  const ends = steps.filter((s) => s.type === 'end');
+  const done = ends.find((e) => e.outcome === 'qualified') || ends[0];
+  const nofit = ends.find((e) => e.outcome !== 'qualified');
+
+  return {
+    greeting: greet ? greet.text : '',
+    done: done ? done.text : "Thanks — I've logged that and someone will come back to you.",
+    nofit: nofit ? nofit.text : 'No problem at all — message any time and I\'ll pick it straight up.',
+    questions: steps.filter((s) => s.type === 'question').map((s) => ({
+      key: s.key,
+      label: s.label,
+      ask: s.ask,
+      field: s.field === 'longtext' || s.field === 'date' ? 'text' : s.field,
+      mode: s.mode,
+      options: (s.options || []).map((o) => ({ label: o.label, reject: Boolean(o.next) })),
+    })),
+  };
+}
+
+function toFlow(draft) {
+  const steps = [];
+  const n = draft.questions.length;
+  if (draft.greeting.trim()) {
+    steps.push({ id: 'greet', type: 'message', label: 'Greeting', text: draft.greeting.trim(),
+                 next: n ? 'q1' : 'done' });
+  }
+  draft.questions.forEach((q, i) => {
+    steps.push({
+      id: 'q' + (i + 1), type: 'question', label: q.label || ('Question ' + (i + 1)),
+      key: q.key || ('answer_' + (i + 1)), ask: q.ask.trim(), field: q.field, mode: q.mode,
+      required: true, next: i + 1 < n ? 'q' + (i + 2) : 'done',
+      options: q.field === 'choice'
+        ? q.options.filter((o) => o.label.trim()).map((o) => ({
+            label: o.label.trim(), value: o.label.trim(), next: o.reject ? 'nofit' : null }))
+        : [],
+    });
+  });
+  steps.push({ id: 'done', type: 'end', label: 'Qualified', outcome: 'qualified', text: draft.done.trim() });
+  steps.push({ id: 'nofit', type: 'end', label: 'Not a fit', outcome: 'unqualified', text: draft.nofit.trim() });
+
+  return { version: 1, name: 'My intake', start: steps[0].id, steps, onDecline: 'nofit' };
+}
+
+/* -------------------------------------------------------------- rendering */
+
+function renderTemplates() {
+  el('templates').innerHTML = templates.map((t) => `
+    <button class="tmpl ${t.id === templateId ? 'on' : ''}" data-t="${esc(t.id)}" type="button">
+      <b>${esc(t.name)}</b><span>${esc(t.tagline)}</span>
+    </button>`).join('');
+
+  for (const button of el('templates').querySelectorAll('.tmpl')) {
+    button.addEventListener('click', () => {
+      const picked = templates.find((t) => t.id === button.dataset.t);
+      if (!picked) return;
+      if (dirtyDraft && !confirm('Replace what you have written with the ' + picked.name + ' starter?')) return;
+      templateId = picked.id;
+      draft = toDraft(picked.flow);
+      dirtyDraft = false;
+      renderBuilder();
+    });
+  }
+}
+
+let dirtyDraft = false;
+
+function renderBuilder() {
+  el('greeting').value = draft.greeting;
+  el('ending').value = draft.done;
+  el('q-count').textContent = draft.questions.length +
+    (draft.questions.length === 1 ? ' question' : ' questions');
+
+  el('qs').innerHTML = draft.questions.map((q, i) => `
+    <div class="q" data-i="${i}">
+      <div class="q-top">
+        <span class="n">${i + 1}</span><span class="sp"></span>
+        <button type="button" data-act="up" title="Move up">↑</button>
+        <button type="button" data-act="down" title="Move down">↓</button>
+        <button type="button" data-act="del" title="Remove">✕</button>
+      </div>
+      <textarea data-f="ask" maxlength="320" placeholder="What should it ask?">${esc(q.ask)}</textarea>
+      <div class="q-row">
+        <select data-f="field">${FIELDS.map(([v, l]) =>
+          `<option value="${v}"${v === q.field ? ' selected' : ''}>${l}</option>`).join('')}</select>
+        <select data-f="mode">
+          <option value="ai"${q.mode === 'ai' ? ' selected' : ''}>Let it understand any wording</option>
+          <option value="strict"${q.mode === 'strict' ? ' selected' : ''}>Ask word for word</option>
+        </select>
+      </div>
+      ${q.field === 'choice' ? `<div class="opts">${q.options.map((o, j) => `
+        <div class="opt">
+          <input type="text" data-f="opt" data-j="${j}" value="${esc(o.label)}" placeholder="An option">
+          <label><input type="checkbox" data-f="rej" data-j="${j}"${o.reject ? ' checked' : ''}> not a fit</label>
+          <button class="x" type="button" data-act="delopt" data-j="${j}">✕</button>
+        </div>`).join('')}
+        <button class="addq" type="button" data-act="addopt">+ Option</button></div>` : ''}
+    </div>`).join('');
+
+  renderPreview();
+}
+
+/* {{name}} drops in whoever is messaging, and {{#name}}…{{/name}} keeps the
+   words around it only when we actually know the name. The preview resolves
+   both, because nobody should have to read mustache syntax to picture the
+   message their client gets. */
+function fillPreview(text) {
+  return String(text)
+    .replace(/\{\{#(\w+)\}\}([\s\S]*?)\{\{\/\1\}\}/g, '$2')
+    .replace(/\{\{(?:name|contact_name)\}\}/g, 'Thabo')
+    .replace(/\{\{tenant\}\}/g, 'your firm')
+    .replace(/\{\{\w+\}\}/g, 'their answer')
+    .replace(/[ \t]{2,}/g, ' ')
+    .trim();
+}
+
+/* What the whole thing will actually read like, in order. */
+function renderPreview() {
+  const bits = [];
+  if (draft.greeting.trim()) bits.push(`<div class="b clerk">${esc(fillPreview(draft.greeting))}</div>`);
+
+  for (const q of draft.questions) {
+    if (!q.ask.trim()) continue;
+    const list = q.field === 'choice'
+      ? '\n\n' + q.options.filter((o) => o.label.trim())
+          .map((o, i) => (i + 1) + '. ' + o.label.trim()).join('\n')
+      : '';
+    bits.push(`<div class="b clerk">${esc(fillPreview(q.ask) + list)}</div>`);
+    bits.push(`<div class="them">their answer</div>`);
+  }
+  bits.push(`<div class="fin">${esc(fillPreview(draft.done))}</div>`);
+  el('pv').innerHTML = bits.join('');
+}
+
+/* ---------------------------------------------------------------- editing */
+
+function markDirty() { dirtyDraft = true; }
+
+el('greeting').addEventListener('input', (e) => { draft.greeting = e.target.value; markDirty(); renderPreview(); });
+el('ending').addEventListener('input', (e) => { draft.done = e.target.value; markDirty(); renderPreview(); });
+
+el('qs').addEventListener('input', (e) => {
+  const card = e.target.closest('.q'); if (!card) return;
+  const q = draft.questions[Number(card.dataset.i)];
+  const f = e.target.dataset.f;
+  if (f === 'ask') q.ask = e.target.value;
+  else if (f === 'opt') q.options[Number(e.target.dataset.j)].label = e.target.value;
+  else return;
+  markDirty(); renderPreview();
+});
+
+el('qs').addEventListener('change', (e) => {
+  const card = e.target.closest('.q'); if (!card) return;
+  const q = draft.questions[Number(card.dataset.i)];
+  const f = e.target.dataset.f;
+  if (f === 'field') {
+    q.field = e.target.value;
+    if (q.field === 'choice' && !q.options.length) {
+      q.options = [{ label: 'Yes', reject: false }, { label: 'No', reject: false }];
+    }
+  } else if (f === 'mode') { q.mode = e.target.value; }
+  else if (f === 'rej') { q.options[Number(e.target.dataset.j)].reject = e.target.checked; markDirty(); renderPreview(); return; }
+  else return;
+  markDirty(); renderBuilder();
+});
+
+el('qs').addEventListener('click', (e) => {
+  const button = e.target.closest('[data-act]'); if (!button) return;
+  const card = button.closest('.q'); const i = Number(card.dataset.i);
+  const q = draft.questions[i];
+  const act = button.dataset.act;
+
+  if (act === 'del') draft.questions.splice(i, 1);
+  else if (act === 'up' && i > 0) draft.questions.splice(i - 1, 0, draft.questions.splice(i, 1)[0]);
+  else if (act === 'down' && i < draft.questions.length - 1) draft.questions.splice(i + 1, 0, draft.questions.splice(i, 1)[0]);
+  else if (act === 'addopt') q.options.push({ label: '', reject: false });
+  else if (act === 'delopt') q.options.splice(Number(button.dataset.j), 1);
+  else return;
+  markDirty(); renderBuilder();
+});
+
+el('add-q').addEventListener('click', () => {
+  draft.questions.push({
+    key: 'answer_' + (draft.questions.length + 1), label: 'Question',
+    ask: '', field: 'text', mode: 'ai', options: [],
+  });
+  markDirty(); renderBuilder();
+  const last = el('qs').querySelector('.q:last-child textarea');
+  if (last) last.focus();
+});
+
+/* ------------------------------------------------------------------ saving */
+
+el('build-save').addEventListener('click', async () => {
+  if (saving) return;
+
+  const blank = draft.questions.filter((q) => !q.ask.trim());
+  if (!draft.questions.length || blank.length) {
+    showError(['Every question needs something to ask — fill the empty ones in or remove them.']);
+    return;
+  }
+
+  saving = true;
+  el('build-save').disabled = true;
+  el('build-note').textContent = 'Saving…';
+
+  try {
+    const response = await fetch('/api/session/' + token + '/flow', {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ flow: toFlow(draft), templateId }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      showError((data.problems || []).filter((p) => p.level === 'error').map((p) => p.message)
+        .concat(data.problems ? [] : ['That could not be saved. Try again in a moment.']));
+      return;
+    }
+    dirtyDraft = false;
+    el('build-error').classList.add('hidden');
+    show(connected ? 'live' : 'connect');
+  } catch (error) {
+    showError(['Could not reach the server. Check your connection and try again.']);
+  } finally {
+    saving = false;
+    el('build-save').disabled = false;
+    el('build-note').textContent = 'Takes effect immediately — no account, nothing to install.';
+  }
+});
+
+function showError(lines) {
+  const box = el('build-error');
+  box.innerHTML = '<strong>Not saved.</strong><ul>' +
+    lines.map((l) => '<li>' + esc(l) + '</li>').join('') + '</ul>';
+  box.classList.remove('hidden');
+  box.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+/* ------------------------------------------------------------------- views */
+
+function show(view) {
+  for (const name of ['build', 'connect', 'live']) {
+    el('view-' + name).classList.toggle('hidden', name !== view);
+  }
+  if (view === 'build') window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function openBuilder() {
+  const data = await fetch('/api/session/' + token + '/flow').then((r) => r.json()).catch(() => null);
+  if (!data || data.error) { show(connected ? 'live' : 'connect'); return; }
+  templates = data.templates || [];
+  templateId = data.templateId || (templates[0] && templates[0].id) || null;
+  draft = toDraft(data.flow);
+  dirtyDraft = false;
+  renderTemplates();
+  renderBuilder();
+  show('build');
+}
+
+el('edit-1').addEventListener('click', openBuilder);
+el('edit-2').addEventListener('click', openBuilder);
+
+let started = false;
+
 async function tick() {
   try {
     const session = await fetch('/api/session/' + token).then((r) => r.json());
@@ -237,14 +643,28 @@ async function tick() {
 
     if (!connected) renderConnect(session);
 
+    // First pass decides where to land: the builder if they have not written a
+    // conversation yet, otherwise straight to the link.
+    if (!started) {
+      started = true;
+      if (!session.configured && !session.connected) {
+        await openBuilder();
+      } else {
+        show(session.connected ? 'live' : 'connect');
+      }
+    }
+
     if (session.connected && !connected) {
       connected = true;
-      el('view-connect').classList.add('hidden');
-      el('view-live').classList.remove('hidden');
       el('live-label').textContent = 'Connected';
+      // Don't yank someone out of the builder mid-sentence because a message
+      // happened to arrive; the Save button takes them on.
+      if (!el('view-build').classList.contains('hidden')) return;
+      show('live');
     }
 
     if (!connected) return;
+    if (!el('view-build').classList.contains('hidden')) return;
 
     const data = await fetch('/api/session/' + token + '/messages').then((r) => r.json());
     questions = data.questions || questions;

@@ -573,3 +573,59 @@ function slug(value: string | null): string | null {
 function titleize(key: string): string {
   return key.replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
+
+
+/* ------------------------------------------------------- the public builder */
+
+/**
+ * What an anonymous visitor is allowed to save.
+ *
+ * The flow they build is text this number will send back out over WhatsApp, so
+ * it is untrusted input with a delivery mechanism attached. The blast radius is
+ * small — the clerk only ever replies to whoever messaged it, so the worst case
+ * is someone sending themselves their own words — but a code can be passed on,
+ * and unbounded text on a metered channel is its own problem. Hence caps, and
+ * only the three step kinds the visitor-facing builder can actually produce.
+ */
+export const PUBLIC_LIMITS = {
+  steps: 14,
+  questions: 8,
+  options: 6,
+  text: 320,
+} as const;
+
+export function checkPublicFlow(flow: Flow): FlowProblem[] {
+  const problems: FlowProblem[] = [];
+  const say = (message: string, stepId: string | null = null) =>
+    problems.push({ level: "error", stepId, message });
+
+  if (flow.steps.length > PUBLIC_LIMITS.steps) {
+    say(`That's more than ${PUBLIC_LIMITS.steps} steps — trim it down a little.`);
+  }
+
+  const questions = flow.steps.filter((step) => step.type === "question");
+  if (questions.length === 0) say("Add at least one question.");
+  if (questions.length > PUBLIC_LIMITS.questions) {
+    say(`${PUBLIC_LIMITS.questions} questions is the most the demo will run.`);
+  }
+
+  for (const step of flow.steps) {
+    if (step.type === "condition") {
+      say(`"${step.label}" isn't something the demo builder can run.`, step.id);
+      continue;
+    }
+    const text = step.type === "question" ? step.ask : step.type === "message" ? step.text : step.text;
+    if (text.length > PUBLIC_LIMITS.text) {
+      say(`"${step.label}" is longer than ${PUBLIC_LIMITS.text} characters.`, step.id);
+    }
+    if (step.type === "question" && step.options.length > PUBLIC_LIMITS.options) {
+      say(`"${step.label}" has more than ${PUBLIC_LIMITS.options} options.`, step.id);
+    }
+    if (step.type === "end" && step.bookingUrl) {
+      // Nobody gets to point the demo's closing message at a link of their own.
+      step.bookingUrl = null;
+    }
+  }
+
+  return problems;
+}

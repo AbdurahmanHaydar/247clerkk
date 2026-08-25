@@ -134,6 +134,14 @@ export async function handleInbound(msg: NormalizedInbound): Promise<InboundResu
       );
     }
 
+    // The conversation a visitor built for themselves on the session page wins
+    // over the tenant's. It has to: every trial lead shares the demo number, so
+    // the tenant's own flow is the fallback, not the answer.
+    const flowToken = conversation.signup_token ?? claimedToken;
+    const tokenFlow = flowToken
+      ? await one<{ flow: unknown }>(client, `select flow from signup_tokens where token = $1`, [flowToken])
+      : undefined;
+
     const history = await rows<{ direction: "in" | "out"; body: string | null }>(
       client,
       `select direction, body from messages
@@ -151,7 +159,7 @@ export async function handleInbound(msg: NormalizedInbound): Promise<InboundResu
       history,
       tokenJustClaimed: claimedToken,
       dashboardUrl: claimedToken ? `${config.publicAppUrl}/s/${claimedToken}` : null,
-      flow: loadFlow(tenant.flow, tenant.qualification_config),
+      flow: loadFlow(tokenFlow?.flow ?? tenant.flow, tenant.qualification_config),
       flowState: conversation.flow_state,
     });
 

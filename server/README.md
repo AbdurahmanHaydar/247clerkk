@@ -42,6 +42,8 @@ dashboard queries live in Postgres where they are queryable.
 | `public/t.js` | The tracker both the landing page and the session page load. |
 | `db/002_visits.sql` | The `visits` table. Apply with `db/migrate.mjs`. |
 | `db/003_flows.sql` | `tenants.flow`, `conversations.flow_state`, `flow_revisions`. |
+| `db/004_session_flows.sql` | `signup_tokens.flow` — the conversation a visitor builds for themselves. |
+| `src/templates.ts` | The starter conversations the demo builder offers. |
 | `public/session.html` | The live demo dashboard served at `/s/:token`. |
 | `public/admin.html` | The owner dashboard served at `/admin/:token`. |
 | `public/book.html` | Placeholder for `/book`; set `BOOKING_URL` to redirect instead. |
@@ -53,16 +55,48 @@ dashboard queries live in Postgres where they are queryable.
 247clerk.com  ──►  app.247clerk.com/start   mints a code, redirects
                             │
                             ▼
-                   /s/CLK-XXXXXX            QR + "Open WhatsApp", polling
+                   /s/CLK-XXXXXX  (build)   pick a trade, edit the questions
+                            │
+                    "Save and open WhatsApp"
+                            ▼
+                   /s/CLK-XXXXXX  (connect) QR + "Open WhatsApp", polling
                             │
               first WhatsApp message claims the code
                             ▼
-                   /s/CLK-XXXXXX            transcript + live lead verdict
+                   /s/CLK-XXXXXX  (live)    transcript + live lead verdict
 ```
 
 `/start` mints the session server-side and redirects, so there is no form to
 fill, nothing to lose on refresh, and the dashboard URL is shareable. The page
 polls `/api/session/:token` every 2s.
+
+All three stages are the same URL. Which one shows is decided by the session:
+no flow saved yet and not connected means the builder, otherwise the link, and
+once a message has landed, the transcript. **Edit the questions** goes back to
+the builder from either of the later stages, and applies from the next message.
+
+### The visitor builds their own conversation
+
+This is the demo's whole pitch — you configure what the clerk asks *before* you
+test it, and it answers in your words a moment later. The builder writes the
+same flow format the engine runs; there is no second implementation.
+
+It is deliberately smaller than the owner's builder in `/admin`: a greeting,
+some questions, one ending, and a "not a fit" toggle on any option of a list
+question (which compiles to that option branching to the unqualified end). No
+conditions, no jump rules — those stay in the admin builder.
+
+The flow lives on `signup_tokens.flow`, **not** on the tenant. It has to: every
+trial lead shares one demo number, so a tenant-level flow would mean the last
+person to press save rewrote the conversation for everyone. `handleInbound`
+resolves the flow in that order — the conversation's signup code first, then
+the tenant, then the legacy config, then the built-in default.
+
+Because that flow is untrusted text this number will send back out,
+`checkPublicFlow()` caps it: 14 steps, 8 questions, 6 options, 320 characters
+per message, no condition steps, and no booking link of the visitor's choosing.
+The blast radius is small — the clerk only ever replies to whoever messaged it —
+but a code can be passed to someone else, so the caps are not optional.
 
 Anyone holding the code can view that conversation — it is the visitor's own
 chat and the code is single-use random, but it is not authentication. Real

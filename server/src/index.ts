@@ -9,7 +9,8 @@ import QRCode from "qrcode";
 import { registerAdmin } from "./admin.js";
 import { config } from "./config.js";
 import { logEvent, pool, query, queryOne } from "./db.js";
-import { loadFlow } from "./flow.js";
+import { checkPublicFlow, loadFlow, normalizeFlow, validateFlow } from "./flow.js";
+import { TEMPLATES, templateById } from "./templates.js";
 import { handleInbound, parseInbound } from "./inbound.js";
 import { buildWaLink, generateToken } from "./tokens.js";
 import { clientIp, isVisitKind, rateLimited, recordVisitSafely } from "./visits.js";
@@ -31,7 +32,7 @@ app.use(
       "https://app.247clerk.com",
       "http://localhost:5173",
     ],
-    allowMethods: ["GET", "POST", "OPTIONS"],
+    allowMethods: ["GET", "POST", "PUT", "OPTIONS"],
   }),
 );
 
@@ -181,8 +182,9 @@ app.get("/api/session/:token", async (c) => {
     expires_at: Date;
     conversation_id: string | null;
     state: string | null;
+    flow: unknown;
   }>(
-    `select t.claimed_at, t.expires_at, c.id as conversation_id, c.state
+    `select t.claimed_at, t.expires_at, t.flow, c.id as conversation_id, c.state
        from signup_tokens t
        left join conversations c on c.signup_token = t.token
       where t.token = $1`,
@@ -195,6 +197,8 @@ app.get("/api/session/:token", async (c) => {
 
   return c.json({
     connected,
+    // Until they've built one, the page opens on the builder rather than the QR.
+    configured: row.flow !== null,
     expired: row.expires_at.getTime() < Date.now(),
     conversationId: row.conversation_id,
     state: row.state,
@@ -210,12 +214,14 @@ app.get("/api/session/:token/messages", async (c) => {
   const conversation = await queryOne<{
     id: string;
     state: string;
+    token_flow: unknown;
     flow: unknown;
     qualification_config: unknown;
   }>(
-    `select c.id, c.state, t.flow, t.qualification_config
+    `select c.id, c.state, s.flow as token_flow, t.flow, t.qualification_config
        from conversations c
        join tenants t on t.id = c.tenant_id
+       left join signup_tokens s on s.token = c.signup_token
       where c.signup_token = $1`,
     [token],
   );
@@ -223,7 +229,10 @@ app.get("/api/session/:token/messages", async (c) => {
 
   // The checklist on the page is whatever this tenant's flow actually asks for,
   // not a fixed three.
-  const questions = loadFlow(conversation.flow, conversation.qualification_config)
+  const questions = loadFlow(
+    conversation.token_flow ?? conversation.flow,
+    conversation.qualification_config,
+  )
     .steps.filter((step) => step.type === "question")
     .map((step) => ({ key: step.key, label: step.label }));
 
@@ -244,6 +253,67 @@ app.get("/api/session/:token/messages", async (c) => {
     questions,
     qualification: qualification ?? null,
   });
+});
+
+/**
+ * The conversation the visitor is about to test. Theirs if they have saved one,
+ * otherwise the starter they are most likely to want, so the builder always
+ * opens on something real rather than an empty page.
+ */
+app.get("/api/session/:token/flow", async (c) => {
+  const token = c.req.param("token").toUpperCase();
+  const row = await queryOne<{ flow: unknown; flow_template: string | null; expires_at: Date }>(
+    `select flow, flow_template, expires_at from signup_tokens where token = $1`,
+    [token],
+  );
+  if (!row) return c.json({ error: "not_found" }, 404);
+
+  const saved = row.flow !== null;
+  const starter = templateById(row.flow_template) ?? TEMPLATES[0];
+
+  return c.json({
+    saved,
+    templateId: row.flow_template ?? null,
+    expired: row.expires_at.getTime() < Date.now(),
+    flow: saved ? normalizeFlow(row.flow) : starter?.flow,
+    templates: TEMPLATES.map((template) => ({
+      id: template.id,
+      name: template.name,
+      tagline: template.tagline,
+      flow: template.flow,
+    })),
+  });
+});
+
+/**
+ * Saves it. Applies from the visitor's next WhatsApp message, so this stays
+ * open for editing even once they are mid-conversation.
+ */
+app.put("/api/session/:token/flow", async (c) => {
+  const token = c.req.param("token").toUpperCase();
+  const row = await queryOne<{ token: string; expires_at: Date }>(
+    `select token, expires_at from signup_tokens where token = $1`,
+    [token],
+  );
+  if (!row) return c.json({ error: "not_found" }, 404);
+  if (row.expires_at.getTime() < Date.now()) return c.json({ error: "expired" }, 410);
+
+  const body = (await c.req.json().catch(() => null)) as Record<string, unknown> | null;
+  if (!body) return c.json({ error: "malformed" }, 400);
+
+  const { flow, problems } = validateFlow(body["flow"]);
+  const all = [...problems, ...checkPublicFlow(flow)];
+  const errors = all.filter((problem) => problem.level === "error");
+  if (errors.length > 0) return c.json({ error: "invalid", problems: all }, 400);
+
+  const templateId = templateById(typeof body["templateId"] === "string" ? body["templateId"] : null);
+  await query(`update signup_tokens set flow = $1, flow_template = $2 where token = $3`, [
+    JSON.stringify(flow),
+    templateId?.id ?? null,
+    token,
+  ]);
+
+  return c.json({ ok: true, flow, problems: all });
 });
 
 /* ------------------------------------------------------------------- pages */
