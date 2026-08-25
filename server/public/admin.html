@@ -133,6 +133,99 @@ pre{font-family:var(--mono);font-size:11.5px;background:#FBFCF9;border:1px solid
   .people{max-height:340px}
   .detail{max-height:none}
 }
+
+/* ================================ flow builder ================================ */
+
+.flowbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:12px 14px;margin-bottom:14px}
+.flowbar select,.flowbar input{font-family:var(--body);font-size:14px;color:var(--ink);background:var(--paper);
+  border:1px solid var(--line);border-radius:9px;padding:7px 11px}
+.flowbar input{min-width:190px}
+.flowbar .grow{flex:1}
+.btn{font-family:var(--body);font-size:13.5px;border-radius:999px;padding:7px 16px;cursor:pointer;
+  border:1px solid var(--line);background:var(--card);color:var(--ink);transition:.15s ease}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--green);border-color:var(--green);color:#fff;font-weight:600}
+.btn.primary:hover{background:var(--green-dark);border-color:var(--green-dark)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.tiny{padding:3px 10px;font-size:12px}
+.src-pill{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;
+  border-radius:999px;padding:3px 10px;background:#E9EBE5;color:var(--muted)}
+.src-pill.legacy{background:#FBF0DC;color:var(--amber)}
+.src-pill.flow{background:var(--bubble);color:var(--green-dark)}
+
+.problems{border-radius:var(--radius);padding:12px 16px;margin-bottom:14px;font-size:14px}
+.problems.error{background:#FCEDED;border:1px solid #E7BDBD;color:#8C2F2F}
+.problems.warn{background:#FBF0DC;border:1px solid #E6D2A8;color:var(--amber)}
+.problems.ok{background:var(--bubble);border:1px solid #BFE4CB;color:var(--green-dark)}
+.problems ul{margin:6px 0 0 18px}
+
+.steps{padding:12px;display:flex;flex-direction:column;gap:9px;max-height:70vh;overflow-y:auto}
+.step{border:1px solid var(--line);border-radius:11px;background:var(--card)}
+.step.dragging{opacity:.4}
+.step.drop-before{box-shadow:0 -3px 0 var(--green)}
+.step-head{display:flex;align-items:center;gap:9px;padding:10px 12px;cursor:pointer}
+.step-head .grip{cursor:grab;color:#B6C0B8;font-size:15px;line-height:1;user-select:none}
+.step-head .n{font-family:var(--mono);font-size:11.5px;color:var(--muted);min-width:16px}
+.step-head .label{font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.step-head .say{color:var(--muted);font-weight:400;font-size:13px}
+.kind{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.07em;
+  border-radius:999px;padding:2px 9px;background:#E9EBE5;color:var(--muted)}
+.kind.question{background:var(--bubble);color:var(--green-dark)}
+.kind.message{background:#E4EDF6;color:#2A5C8C}
+.kind.condition{background:#FBF0DC;color:var(--amber)}
+.kind.end{background:var(--ink);color:var(--paper)}
+.step-head .icon{border:none;background:none;cursor:pointer;color:var(--muted);font-size:14px;padding:2px 5px;
+  border-radius:6px;line-height:1}
+.step-head .icon:hover{background:#EFF2ED;color:var(--ink)}
+.start-flag{font-family:var(--mono);font-size:10px;color:var(--green-dark);letter-spacing:.06em}
+
+.step-body{border-top:1px solid var(--line);padding:14px;display:grid;gap:12px}
+.field{display:grid;gap:5px}
+.field > label{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.field input,.field select,.field textarea{font-family:var(--body);font-size:14px;color:var(--ink);
+  background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:8px 11px;width:100%}
+.field textarea{resize:vertical;min-height:62px;line-height:1.5}
+.field input:focus,.field select:focus,.field textarea:focus{outline:2px solid var(--bubble);border-color:var(--green)}
+.field .hint{font-size:12px;color:var(--muted);line-height:1.45}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media (max-width:760px){.row2,.row3{grid-template-columns:1fr}}
+
+.modes{display:flex;gap:8px;flex-wrap:wrap}
+.mode{flex:1;min-width:180px;border:1px solid var(--line);border-radius:10px;padding:9px 12px;cursor:pointer;
+  background:var(--paper);transition:.15s ease}
+.mode.on{border-color:var(--green);background:var(--bubble)}
+.mode b{display:block;font-size:13.5px}
+.mode span{font-size:12px;color:var(--muted);line-height:1.4}
+
+.rules{display:grid;gap:7px}
+.rule{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.rule select,.rule input{font-family:var(--body);font-size:13px;padding:6px 9px;border:1px solid var(--line);
+  border-radius:8px;background:var(--paper);color:var(--ink);min-width:0}
+.rule .k{flex:1 1 110px}.rule .op{flex:0 1 130px}.rule .v{flex:1 1 100px}.rule .to{flex:1 1 130px}
+.rule .arrow{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.rule .x{border:none;background:none;color:var(--muted);cursor:pointer;font-size:14px;padding:2px 5px}
+.rule .x:hover{color:#8C2F2F}
+.addbar{display:flex;gap:8px;flex-wrap:wrap;padding:12px;border-top:1px solid var(--line)}
+
+/* the simulator */
+.sim{padding:14px;height:52vh;overflow-y:auto;display:flex;flex-direction:column;gap:8px;background:#F1F3EE}
+.sim .b{max-width:82%;padding:9px 13px;border-radius:13px;font-size:14.5px;white-space:pre-wrap;line-height:1.5}
+.sim .b.in{align-self:flex-end;background:var(--bubble);border-bottom-right-radius:4px}
+.sim .b.out{align-self:flex-start;background:var(--card);border:1px solid var(--line);border-bottom-left-radius:4px}
+.sim .trace{align-self:flex-start;font-family:var(--mono);font-size:10.5px;color:var(--muted);
+  letter-spacing:.03em;padding:0 4px 4px}
+.sim .trace b{font-weight:500;color:var(--green-dark)}
+.simform{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line)}
+.simform input{flex:1;font-family:var(--body);font-size:14px;border:1px solid var(--line);border-radius:999px;
+  padding:9px 15px;background:var(--paper);color:var(--ink)}
+.simform input:focus{outline:2px solid var(--bubble);border-color:var(--green)}
+.switch{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.06em;cursor:pointer}
+.answers{padding:11px 14px;border-top:1px solid var(--line);display:flex;gap:7px;flex-wrap:wrap;font-size:12.5px}
+.answers .a{background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:3px 11px}
+.answers .a b{font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:400}
 </style>
 </head>
 <body>
@@ -155,6 +248,7 @@ pre{font-family:var(--mono);font-size:11.5px;background:#FBFCF9;border:1px solid
     <button class="tab on" data-tab="people" id="tab-people">People</button>
     <button class="tab" data-tab="unclaimed" id="tab-unclaimed">Unused links</button>
     <button class="tab" data-tab="visitors" id="tab-visitors">Visitors</button>
+    <button class="tab" data-tab="flow" id="tab-flow">Conversation</button>
     <input class="search" id="search" type="search" placeholder="Search name, number, email…" autocomplete="off">
   </div>
 
@@ -196,14 +290,70 @@ pre{font-family:var(--mono);font-size:11.5px;background:#FBFCF9;border:1px solid
     </div>
   </section>
 
+  <!-- ================= flow ================= -->
+  <section id="view-flow" class="hidden">
+    <div class="flowbar">
+      <select id="flow-tenant" title="Which number's conversation you're editing"></select>
+      <span class="src-pill" id="flow-source">—</span>
+      <input id="flow-name" placeholder="Name this flow" autocomplete="off">
+      <label class="switch" title="Where to go when someone says they're not interested">
+        Not interested →
+        <select id="flow-decline"></select>
+      </label>
+      <span class="grow"></span>
+      <select id="flow-revisions" title="Earlier saved versions"><option value="">History…</option></select>
+      <button class="btn" id="flow-default">Reset to default</button>
+      <button class="btn primary" id="flow-save">Save</button>
+    </div>
+
+    <div class="problems ok hidden" id="flow-problems"></div>
+
+    <div class="split">
+      <div class="panel">
+        <div class="panel-head">
+          <h2>The conversation</h2><span class="meta" id="flow-meta">—</span>
+        </div>
+        <div class="steps" id="flow-steps"></div>
+        <div class="addbar">
+          <button class="btn tiny" data-add="question">+ Question</button>
+          <button class="btn tiny" data-add="message">+ Message</button>
+          <button class="btn tiny" data-add="condition">+ Condition</button>
+          <button class="btn tiny" data-add="end">+ End</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Try it</h2>
+          <label class="switch" title="Off runs the flow with no model at all — what happens if Gemini is down">
+            <input type="checkbox" id="sim-ai" checked> AI reading
+          </label>
+        </div>
+        <div class="sim" id="sim-log"></div>
+        <div class="answers" id="sim-answers"></div>
+        <form class="simform" id="sim-form">
+          <input id="sim-input" placeholder="Message it the way a client would…" autocomplete="off">
+          <button class="btn primary" type="submit" id="sim-send">Send</button>
+          <button class="btn" type="button" id="sim-reset">Restart</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <script>
 const BASE = '/admin/' + location.pathname.split('/')[2];
 const el = (id) => document.getElementById(id);
 
-const LABELS = { matter_type: 'Matter type', timeline: 'Timeline', contact_name: 'Contact name' };
-const VERDICTS = { qualified: 'Qualified', unqualified: 'Not qualified', needs_info: 'Collecting' };
+// Flows collect whatever the owner asks for, so answer labels are derived from
+// the key. These are the few that read badly when they are.
+const LABELS = { matter_type: 'Matter type', wa_id: 'WhatsApp number', email: 'Email' };
+const VERDICTS = { qualified: 'Qualified', unqualified: 'Not qualified', needs_info: 'Collecting',
+                   handoff: 'Needs a person' };
+
+const labelFor = (key) => LABELS[key] ||
+  key.replace(/[_-]+/g, ' ').replace(/^./, (c) => c.toUpperCase());
 
 let people = [];
 let unclaimed = [];
@@ -499,8 +649,9 @@ function renderDetail(data) {
       ${fact('Came from', signup.source)}
       ${fact('Signup code', signup.token)}
       ${fact('Verdict', latest ? (VERDICTS[latest.verdict] || latest.verdict) : null)}
-      ${fact('Matter type', slots.matter_type)}
-      ${fact('Timeline', slots.timeline)}
+      ${Object.entries(slots)
+          .filter(([key, value]) => value && key !== 'contact_name')
+          .map(([key, value]) => fact(labelFor(key), value)).join('')}
       ${fact('First seen', stamp(contact.first_seen_at))}
       ${fact('Last seen', stamp(contact.last_seen_at))}
       ${fact('Messages sent', contact.message_count)}
@@ -578,15 +729,679 @@ el('search').addEventListener('input', (event) => {
   renderPeople();
 });
 
+const VIEWS = ['people', 'unclaimed', 'visitors', 'flow'];
+
 for (const button of document.querySelectorAll('.tab')) {
   button.addEventListener('click', () => {
     tab = button.dataset.tab;
     for (const other of document.querySelectorAll('.tab')) other.classList.toggle('on', other === button);
-    el('view-people').classList.toggle('hidden', tab !== 'people');
-    el('view-unclaimed').classList.toggle('hidden', tab !== 'unclaimed');
-    el('view-visitors').classList.toggle('hidden', tab !== 'visitors');
+    for (const view of VIEWS) el('view-' + view).classList.toggle('hidden', tab !== view);
+    // Nothing to search on the builder, and the stats are about leads, not it.
+    el('search').classList.toggle('hidden', tab === 'flow');
+    if (tab === 'flow') openFlowTab();
   });
 }
+
+
+/* ========================== the conversation builder ========================== */
+/* The flow the clerk follows, edited as an ordered list of steps. The first
+   step is always where a conversation starts; everything else is reached by
+   falling through to the next step or by a rule that jumps somewhere else. */
+
+const FIELDS = [
+  ['text', 'Short text'], ['longtext', 'Long text'], ['choice', 'Pick from a list'],
+  ['email', 'Email address'], ['phone', 'Phone number'], ['number', 'Number'], ['date', 'Date'],
+];
+const OPS = [
+  ['is', 'is'], ['is_not', 'is not'], ['contains', 'contains'], ['not_contains', "doesn't contain"],
+  ['gt', 'is more than'], ['lt', 'is less than'], ['answered', 'was answered'], ['empty', 'was left blank'],
+];
+const OUTCOMES = [
+  ['qualified', 'Qualified — worth a call back'],
+  ['unqualified', 'Not a fit'],
+  ['handoff', 'Needs a person now'],
+];
+const KINDS = { question: 'question', message: 'message', condition: 'condition', end: 'end' };
+
+let tenants = [];
+let tenantId = null;
+let flow = null;
+let flowSource = 'default';
+let revisions = [];
+let expanded = new Set();
+let dirty = false;
+let simMessages = [];
+let simTurns = [];
+let simBusy = false;
+let flowOpened = false;
+
+/* ------------------------------------------------------------------ loading */
+
+async function openFlowTab() {
+  if (flowOpened) return;
+  flowOpened = true;
+
+  const data = await fetch(BASE + '/tenants').then((r) => r.json()).catch(() => null);
+  tenants = (data && data.tenants) || [];
+  el('flow-tenant').innerHTML = tenants.map((tenant) =>
+    `<option value="${esc(tenant.id)}">${esc(tenant.name)}${tenant.isDemo ? ' · demo' : ''}</option>`
+  ).join('');
+  if (tenants.length) await loadFlow(tenants[0].id);
+}
+
+async function loadFlow(id) {
+  const data = await fetch(BASE + '/tenants/' + id + '/flow').then((r) => r.json()).catch(() => null);
+  if (!data || data.error) { note('error', ['Could not load that flow.']); return; }
+
+  tenantId = id;
+  flow = data.flow;
+  flowSource = data.source;
+  revisions = data.revisions || [];
+  expanded = new Set();
+  dirty = false;
+  resetSim();
+  renderFlow();
+
+  if (flowSource === 'legacy') {
+    note('warn', ['This number is still running the old three-question config. ' +
+                  'It has been read in below — save once and it becomes a proper flow.']);
+  } else if (flowSource === 'default') {
+    note('warn', ['This number has never had a flow of its own, so it runs the built-in default. ' +
+                  'Edit it below and save to make it yours.']);
+  } else {
+    hideNote();
+  }
+}
+
+/* ---------------------------------------------------------------- rendering */
+
+const labelOf = (step) => step.label || (step.type === 'question' ? step.key : step.type);
+
+function summaryOf(step) {
+  if (step.type === 'question') return step.ask;
+  if (step.type === 'message' || step.type === 'end') return step.text;
+  return step.branches.length + (step.branches.length === 1 ? ' rule' : ' rules');
+}
+
+function renderFlow() {
+  if (!flow) return;
+  el('flow-name').value = flow.name || '';
+  el('flow-source').textContent = { flow: 'saved flow', legacy: 'old config', default: 'default' }[flowSource];
+  el('flow-source').className = 'src-pill ' + flowSource;
+
+  const questions = flow.steps.filter((step) => step.type === 'question').length;
+  el('flow-meta').textContent =
+    flow.steps.length + ' steps · ' + questions + (questions === 1 ? ' question' : ' questions') +
+    (dirty ? ' · unsaved' : '');
+
+  el('flow-decline').innerHTML = '<option value="">stop politely</option>' + flow.steps
+    .filter((step) => step.type === 'end')
+    .map((step) => `<option value="${esc(step.id)}"${step.id === flow.onDecline ? ' selected' : ''}>${
+      esc(labelOf(step))}</option>`).join('');
+
+  el('flow-revisions').innerHTML = '<option value="">History…</option>' + revisions.map((rev) =>
+    `<option value="${esc(rev.id)}">${esc(clock(rev.created_at))}${rev.note ? ' · ' + esc(rev.note) : ''}</option>`
+  ).join('');
+
+  el('flow-steps').innerHTML = flow.steps.length
+    ? flow.steps.map(stepCard).join('')
+    : '<p class="empty">No steps yet. Add a question below to start the conversation.</p>';
+}
+
+function stepCard(step, index) {
+  const open = expanded.has(step.id);
+  return `<div class="step" data-id="${esc(step.id)}" draggable="true">
+    <div class="step-head" data-act="toggle">
+      <span class="grip" title="Drag to reorder">⠿</span>
+      <span class="n">${index + 1}</span>
+      <span class="label">${esc(labelOf(step))} <span class="say">— ${esc(clip(summaryOf(step)))}</span></span>
+      ${index === 0 ? '<span class="start-flag">STARTS HERE</span>' : ''}
+      <span class="kind ${esc(step.type)}">${esc(KINDS[step.type] || step.type)}</span>
+      <button class="icon" data-act="up" title="Move up">↑</button>
+      <button class="icon" data-act="down" title="Move down">↓</button>
+      <button class="icon" data-act="delete" title="Delete step">✕</button>
+      <button class="icon" data-act="toggle">${open ? '⌃' : '⌄'}</button>
+    </div>
+    ${open ? `<div class="step-body">${stepBody(step, index)}</div>` : ''}
+  </div>`;
+}
+
+function stepBody(step, index) {
+  const label = field('Step name', `<input data-path="label" value="${esc(step.label)}">`);
+  const after = index === flow.steps.length - 1 ? 'end the conversation' : 'the next step below';
+
+  if (step.type === 'message') {
+    return label +
+      field('Say this', `<textarea data-path="text">${esc(step.text)}</textarea>`,
+            'Nothing is asked and nothing is stored — it just gets sent. ' + TEMPLATE_HINT) +
+      field('Then', gotoSelect('next', step.next, step.id, after));
+  }
+
+  if (step.type === 'end') {
+    return label +
+      field('Verdict', select('outcome', OUTCOMES, step.outcome)) +
+      field('Final message', `<textarea data-path="text">${esc(step.text)}</textarea>`, TEMPLATE_HINT) +
+      field('Booking link (optional)',
+            `<input data-path="bookingUrl" placeholder="https://cal.com/…" value="${esc(step.bookingUrl || '')}">`,
+            'Added to the last message so a qualified lead can book there and then.');
+  }
+
+  if (step.type === 'condition') {
+    return label +
+      field('Branch on the answers so far', rules(step.branches, 'branches', step.id, true) +
+        `<button class="btn tiny" data-act="add-branch">+ Rule</button>`,
+        'Checked top to bottom; the first rule that fits wins.') +
+      field('If none of them fit', gotoSelect('otherwise', step.otherwise, step.id, after));
+  }
+
+  const isChoice = step.field === 'choice';
+  const isStrict = step.mode === 'strict';
+
+  return label +
+    field('Ask', `<textarea data-path="ask">${esc(step.ask)}</textarea>`, TEMPLATE_HINT) +
+    `<div class="row2">
+      ${field('Save the answer as', `<input data-path="key" value="${esc(step.key)}">`,
+              'The column it appears under on a lead, and the name rules use.')}
+      ${field('Answer type', select('field', FIELDS, step.field))}
+    </div>` +
+    field('How it listens', `<div class="modes">
+      <label class="mode ${isStrict ? '' : 'on'}">
+        <input type="radio" name="mode-${esc(step.id)}" data-path="mode" value="ai" ${isStrict ? '' : 'checked'} hidden>
+        <b>Let the AI read it</b>
+        <span>Asked in your words, but the answer is understood however it's written — including facts
+        volunteered earlier, which skips questions already answered.</span>
+      </label>
+      <label class="mode ${isStrict ? 'on' : ''}">
+        <input type="radio" name="mode-${esc(step.id)}" data-path="mode" value="strict" ${isStrict ? 'checked' : ''} hidden>
+        <b>Ask exactly this</b>
+        <span>Sent word for word and checked locally. No model, so it is predictable and free — but it
+        only ever hears the reply to this one question.</span>
+      </label>
+    </div>`) +
+    (isChoice ? field('Options', options(step) +
+        `<button class="btn tiny" data-act="add-option">+ Option</button>`,
+        'Sent as a numbered list. Replying with the number or the words both work.') : '') +
+    `<div class="row3">
+      ${field('Required', `<select data-path="required">
+        <option value="yes"${step.required ? ' selected' : ''}>Must be answered</option>
+        <option value="no"${step.required ? '' : ' selected'}>Can be skipped</option></select>`)}
+      ${step.field === 'number'
+        ? field('Smallest', `<input data-path="min" type="number" value="${esc(step.min ?? '')}">`) +
+          field('Largest', `<input data-path="max" type="number" value="${esc(step.max ?? '')}">`)
+        : ''}
+    </div>` +
+    (isStrict ? field('If the answer does not fit',
+        `<input data-path="invalidMessage" placeholder="Sorry, I didn't catch that." value="${
+          esc(step.invalidMessage || '')}">`,
+        'Sent in front of the question when it is asked again. After three tries the flow moves on anyway.') : '') +
+    field('Then', gotoSelect('next', step.next, step.id, after)) +
+    field('Unless…', rules(step.jumps, 'jumps', step.id, true) +
+      `<button class="btn tiny" data-act="add-jump">+ Rule</button>`,
+      'Jump somewhere else depending on what they answered.');
+}
+
+const TEMPLATE_HINT = 'Use {{key}} to drop in an answer, and {{#key}}…{{/key}} to keep words only when ' +
+  'that answer exists. {{name}} and {{tenant}} always work.';
+
+function field(label, control, hint) {
+  return `<div class="field"><label>${esc(label)}</label>${control}${
+    hint ? `<span class="hint">${esc(hint)}</span>` : ''}</div>`;
+}
+
+function select(path, pairs, value) {
+  return `<select data-path="${esc(path)}">${pairs.map(([key, label]) =>
+    `<option value="${esc(key)}"${key === value ? ' selected' : ''}>${esc(label)}</option>`).join('')}</select>`;
+}
+
+function gotoSelect(path, value, selfId, fallback) {
+  const options = flow.steps
+    .filter((step) => step.id !== selfId)
+    .map((step, i) => `<option value="${esc(step.id)}"${step.id === value ? ' selected' : ''}>${
+      esc((flow.steps.findIndex((s) => s.id === step.id) + 1) + '. ' + labelOf(step))}</option>`);
+  return `<select data-path="${esc(path)}"><option value=""${value ? '' : ' selected'}>↓ ${
+    esc(fallback)}</option>${options.join('')}</select>`;
+}
+
+function options(step) {
+  return '<div class="rules">' + step.options.map((option, i) => `<div class="rule">
+    <input class="k" data-path="options.${i}.label" value="${esc(option.label)}" placeholder="What they see">
+    <span class="arrow">→</span>
+    ${gotoSelect(`options.${i}.next`, option.next, step.id, 'carry on')}
+    <button class="x" data-act="delete-option" data-arg="${i}" title="Remove">✕</button>
+  </div>`).join('') + '</div>';
+}
+
+/** One jump or branch: a set of clauses, and where it goes when they hold. */
+function rules(list, path, selfId, showTo) {
+  if (!list.length) return '<div class="rules"></div>';
+  return '<div class="rules">' + list.map((rule, i) => {
+    const clauses = rule.when.clauses;
+    const rows = clauses.map((clause, j) => `<div class="rule">
+      ${j === 0 ? '' : `<span class="arrow">${esc(rule.when.match === 'any' ? 'or' : 'and')}</span>`}
+      ${keySelect(`${path}.${i}.when.clauses.${j}.key`, clause.key)}
+      ${(() => { const sel = select(`${path}.${i}.when.clauses.${j}.op`, OPS, clause.op);
+                 return sel.replace('<select', '<select class="op"'); })()}
+      ${clause.op === 'answered' || clause.op === 'empty' ? '' :
+        `<input class="v" data-path="${path}.${i}.when.clauses.${j}.value" value="${esc(clause.value)}"
+          placeholder="value">`}
+      <button class="x" data-act="delete-clause" data-arg="${path}.${i}.${j}" title="Remove">✕</button>
+    </div>`).join('');
+
+    return rows + `<div class="rule">
+      <span class="arrow">then go to</span>
+      ${gotoSelect(`${path}.${i}.to`, rule.to, selfId, 'carry on')}
+      ${clauses.length > 1 ? select(`${path}.${i}.when.match`,
+        [['all', 'all must hold'], ['any', 'any may hold']], rule.when.match) : ''}
+      <button class="btn tiny" data-act="add-clause" data-arg="${path}.${i}">+ and</button>
+      <button class="x" data-act="delete-rule" data-arg="${path}.${i}" title="Remove rule">✕</button>
+    </div>`;
+  }).join('') + '</div>';
+}
+
+function keySelect(path, value) {
+  const keys = [...new Set(flow.steps.filter((s) => s.type === 'question').map((s) => s.key))];
+  if (value && !keys.includes(value)) keys.push(value);
+  return `<select class="k" data-path="${esc(path)}">${keys.map((key) =>
+    `<option value="${esc(key)}"${key === value ? ' selected' : ''}>${esc(key)}</option>`).join('')}</select>`;
+}
+
+const clip = (text) => {
+  const line = String(text || '').replace(/\s+/g, ' ').trim();
+  return line.length > 70 ? line.slice(0, 69) + '…' : line;
+};
+
+/* ----------------------------------------------------------------- editing */
+
+function stepOf(id) { return flow.steps.find((step) => step.id === id); }
+
+/** Writes a dotted path — "options.1.next", "jumps.0.when.clauses.0.op". */
+function setPath(target, path, value) {
+  const parts = path.split('.');
+  let node = target;
+  for (const part of parts.slice(0, -1)) node = node[part];
+  node[parts[parts.length - 1]] = value;
+}
+
+function readPath(target, path) {
+  return path.split('.').reduce((node, part) => (node == null ? node : node[part]), target);
+}
+
+function touched() {
+  dirty = true;
+  const questions = flow.steps.filter((step) => step.type === 'question').length;
+  el('flow-meta').textContent =
+    flow.steps.length + ' steps · ' + questions + (questions === 1 ? ' question' : ' questions') + ' · unsaved';
+}
+
+function uniqueStepId(base) {
+  let id = base, n = 2;
+  while (flow.steps.some((step) => step.id === id)) id = base + n++;
+  return id;
+}
+
+function blankStep(type) {
+  const id = uniqueStepId(type === 'question' ? 'q' : type[0]);
+  if (type === 'message') {
+    return { id, type, label: 'Message', text: 'Thanks for getting in touch.', next: null };
+  }
+  if (type === 'condition') {
+    return { id, type, label: 'Condition', branches: [], otherwise: null };
+  }
+  if (type === 'end') {
+    return { id, type, label: 'Qualified', outcome: 'qualified',
+             text: "Thanks — I've logged that and someone will come back to you.", bookingUrl: null };
+  }
+  const key = uniqueKey();
+  return { id, type: 'question', label: 'New question', key, ask: '', field: 'text', mode: 'ai',
+           options: [], required: true, pattern: null, invalidMessage: null, min: null, max: null,
+           jumps: [], next: null };
+}
+
+function uniqueKey() {
+  let n = 1;
+  const taken = new Set(flow.steps.filter((s) => s.type === 'question').map((s) => s.key));
+  while (taken.has('answer_' + n)) n++;
+  return 'answer_' + n;
+}
+
+function blankRule() {
+  const first = flow.steps.find((step) => step.type === 'question');
+  return { when: { match: 'all', clauses: [{ key: first ? first.key : '', op: 'is', value: '' }] }, to: null };
+}
+
+/* Text and number inputs: mutate in place, never re-render — a re-render here
+   would take the caret out from under whoever is typing. */
+el('flow-steps').addEventListener('input', (event) => {
+  const input = event.target.closest('[data-path]');
+  if (!input || input.tagName === 'SELECT') return;
+  const card = input.closest('.step');
+  const step = stepOf(card.dataset.id);
+  if (!step) return;
+
+  let value = input.value;
+  if (input.type === 'number') value = value === '' ? null : Number(value);
+  else if (['bookingUrl', 'invalidMessage'].includes(input.dataset.path)) value = value.trim() || null;
+  setPath(step, input.dataset.path, value);
+
+  const head = card.querySelector('.step-head .label');
+  if (head) {
+    head.innerHTML = esc(labelOf(step)) + ' <span class="say">— ' + esc(clip(summaryOf(step))) + '</span>';
+  }
+  touched();
+});
+
+/* Selects and radios: some of them change what the form should show. */
+el('flow-steps').addEventListener('change', (event) => {
+  const input = event.target.closest('[data-path]');
+  if (!input) return;
+  const card = input.closest('.step');
+  const step = stepOf(card.dataset.id);
+  if (!step) return;
+
+  const path = input.dataset.path;
+  let value = input.value;
+  if (path === 'next' || path === 'otherwise' || path.endsWith('.next') || path.endsWith('.to')) {
+    value = value || null;
+  } else if (path === 'required') {
+    value = value === 'yes';
+  } else if (input.type === 'number') {
+    value = value === '' ? null : Number(value);
+  }
+  setPath(step, path, value);
+
+  // Switching to a list needs somewhere to put the options; leaving one keeps
+  // them, in case it was a slip.
+  if (path === 'field' && value === 'choice' && step.options.length === 0) {
+    step.options = [{ label: 'Yes', value: 'Yes', next: null }, { label: 'No', value: 'No', next: null }];
+  }
+  touched();
+
+  // Anything that changes the shape of the form, or of another form, redraws.
+  if (['field', 'mode', 'key', 'required', 'outcome'].includes(path) || path.endsWith('.op')) renderFlow();
+});
+
+el('flow-steps').addEventListener('click', (event) => {
+  const button = event.target.closest('[data-act]');
+  if (!button) return;
+  const card = button.closest('.step');
+  const step = stepOf(card.dataset.id);
+  if (!step) return;
+  const act = button.dataset.act;
+  const arg = button.dataset.arg;
+  const index = flow.steps.indexOf(step);
+
+  if (act === 'toggle') {
+    if (event.target.closest('[data-act]') !== button && event.target.closest('input,select,textarea')) return;
+    expanded.has(step.id) ? expanded.delete(step.id) : expanded.add(step.id);
+    renderFlow();
+    return;
+  }
+  if (act === 'up' || act === 'down') {
+    const to = act === 'up' ? index - 1 : index + 1;
+    if (to < 0 || to >= flow.steps.length) return;
+    flow.steps.splice(to, 0, flow.steps.splice(index, 1)[0]);
+  } else if (act === 'delete') {
+    if (!confirm('Delete "' + labelOf(step) + '"? Anything pointing at it will fall through instead.')) return;
+    flow.steps.splice(index, 1);
+    for (const other of flow.steps) clearLinks(other, step.id);
+    if (flow.onDecline === step.id) flow.onDecline = null;
+  } else if (act === 'add-option') {
+    step.options.push({ label: '', value: '', next: null });
+  } else if (act === 'delete-option') {
+    step.options.splice(Number(arg), 1);
+  } else if (act === 'add-jump' || act === 'add-branch') {
+    (act === 'add-jump' ? step.jumps : step.branches).push(blankRule());
+  } else if (act === 'delete-rule') {
+    const [list, i] = arg.split('.');
+    step[list].splice(Number(i), 1);
+  } else if (act === 'add-clause') {
+    const [list, i] = arg.split('.');
+    const first = flow.steps.find((s) => s.type === 'question');
+    step[list][Number(i)].when.clauses.push({ key: first ? first.key : '', op: 'is', value: '' });
+  } else if (act === 'delete-clause') {
+    const [list, i, j] = arg.split('.');
+    const clauses = step[list][Number(i)].when.clauses;
+    if (clauses.length > 1) clauses.splice(Number(j), 1);
+  } else {
+    return;
+  }
+  touched();
+  renderFlow();
+});
+
+/** Drops every reference to a step that has just been deleted. */
+function clearLinks(step, goneId) {
+  if (step.next === goneId) step.next = null;
+  if (step.otherwise === goneId) step.otherwise = null;
+  for (const list of ['jumps', 'branches']) {
+    if (Array.isArray(step[list])) step[list] = step[list].filter((rule) => rule.to !== goneId);
+  }
+  for (const option of step.options || []) if (option.next === goneId) option.next = null;
+}
+
+/* --------------------------------------------------------------- reordering */
+
+let dragId = null;
+
+el('flow-steps').addEventListener('dragstart', (event) => {
+  const card = event.target.closest('.step');
+  if (!card) return;
+  dragId = card.dataset.id;
+  card.classList.add('dragging');
+  event.dataTransfer.effectAllowed = 'move';
+});
+
+el('flow-steps').addEventListener('dragend', () => {
+  dragId = null;
+  for (const card of el('flow-steps').querySelectorAll('.step')) {
+    card.classList.remove('dragging', 'drop-before');
+  }
+});
+
+el('flow-steps').addEventListener('dragover', (event) => {
+  if (!dragId) return;
+  event.preventDefault();
+  const card = event.target.closest('.step');
+  for (const other of el('flow-steps').querySelectorAll('.step')) other.classList.remove('drop-before');
+  if (card && card.dataset.id !== dragId) card.classList.add('drop-before');
+});
+
+el('flow-steps').addEventListener('drop', (event) => {
+  if (!dragId) return;
+  event.preventDefault();
+  const card = event.target.closest('.step');
+  const from = flow.steps.findIndex((step) => step.id === dragId);
+  const to = card ? flow.steps.findIndex((step) => step.id === card.dataset.id) : flow.steps.length - 1;
+  dragId = null;
+  if (from < 0 || to < 0 || from === to) { renderFlow(); return; }
+  flow.steps.splice(to, 0, flow.steps.splice(from, 1)[0]);
+  touched();
+  renderFlow();
+});
+
+/* -------------------------------------------------------------- the toolbar */
+
+for (const button of document.querySelectorAll('[data-add]')) {
+  button.addEventListener('click', () => {
+    if (!flow) return;
+    const step = blankStep(button.dataset.add);
+    flow.steps.push(step);
+    expanded.add(step.id);
+    touched();
+    renderFlow();
+    el('flow-steps').querySelector(`.step[data-id="${step.id}"]`)
+      ?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  });
+}
+
+el('flow-tenant').addEventListener('change', async (event) => {
+  if (dirty && !confirm('You have unsaved changes. Discard them?')) {
+    event.target.value = tenantId;
+    return;
+  }
+  await loadFlow(event.target.value);
+});
+
+el('flow-name').addEventListener('input', (event) => { flow.name = event.target.value; touched(); });
+el('flow-decline').addEventListener('change', (event) => { flow.onDecline = event.target.value || null; touched(); });
+
+el('flow-save').addEventListener('click', async () => {
+  if (!flow || !tenantId) return;
+  // The list is the flow: whatever sits at the top is where a conversation starts.
+  flow.start = flow.steps.length ? flow.steps[0].id : null;
+
+  el('flow-save').disabled = true;
+  try {
+    const response = await fetch(BASE + '/tenants/' + tenantId + '/flow', {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ flow, note: null }),
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      note('error', (data.problems || []).filter((p) => p.level === 'error').map((p) => p.message),
+           'Not saved — fix these first:');
+      return;
+    }
+    flow = data.flow;
+    flowSource = 'flow';
+    dirty = false;
+    const warnings = (data.problems || []).filter((p) => p.level === 'warning').map((p) => p.message);
+    note(warnings.length ? 'warn' : 'ok',
+         warnings, warnings.length ? 'Saved, but worth a look:' : 'Saved. It is live on the next message.');
+    await refreshRevisions();
+    renderFlow();
+  } catch (error) {
+    note('error', ['Could not reach the server.']);
+  } finally {
+    el('flow-save').disabled = false;
+  }
+});
+
+el('flow-default').addEventListener('click', async () => {
+  if (!tenantId) return;
+  if (!confirm('Replace this flow with the built-in default? The current one stays in history.')) return;
+  const data = await fetch(BASE + '/tenants/' + tenantId + '/flow/reset', { method: 'POST' })
+    .then((r) => r.json()).catch(() => null);
+  if (!data || !data.ok) { note('error', ['Could not reset that flow.']); return; }
+  flow = data.flow;
+  flowSource = 'flow';
+  dirty = false;
+  expanded = new Set();
+  await refreshRevisions();
+  renderFlow();
+  note('ok', [], 'Back to the default three questions.');
+});
+
+el('flow-revisions').addEventListener('change', async (event) => {
+  const id = event.target.value;
+  event.target.value = '';
+  if (!id) return;
+  if (!confirm('Restore that version? The current one is kept in history.')) return;
+
+  const data = await fetch(BASE + '/tenants/' + tenantId + '/flow/revisions/' + id + '/restore',
+                           { method: 'POST' }).then((r) => r.json()).catch(() => null);
+  if (!data || !data.ok) { note('error', ['Could not restore that version.']); return; }
+  flow = data.flow;
+  flowSource = 'flow';
+  dirty = false;
+  expanded = new Set();
+  await refreshRevisions();
+  renderFlow();
+  note('ok', [], 'Restored.');
+});
+
+async function refreshRevisions() {
+  const data = await fetch(BASE + '/tenants/' + tenantId + '/flow').then((r) => r.json()).catch(() => null);
+  revisions = (data && data.revisions) || revisions;
+}
+
+function note(tone, lines, headline) {
+  const box = el('flow-problems');
+  box.className = 'problems ' + tone;
+  box.innerHTML = (headline ? `<strong>${esc(headline)}</strong>` : '') +
+    (lines.length ? '<ul>' + lines.map((line) => `<li>${esc(line)}</li>`).join('') + '</ul>' : '');
+  box.classList.remove('hidden');
+}
+function hideNote() { el('flow-problems').classList.add('hidden'); }
+
+/* --------------------------------------------------------------- simulator */
+
+function resetSim() {
+  simMessages = [];
+  simTurns = [];
+  renderSim();
+}
+
+function renderSim() {
+  if (!simTurns.length) {
+    el('sim-log').innerHTML = '<p class="empty">Send a message to walk the flow as it stands — ' +
+      'including the changes you have not saved.</p>';
+    el('sim-answers').innerHTML = '';
+    return;
+  }
+  el('sim-log').innerHTML = simTurns.map((turn) => {
+    const trace = (turn.trace || []).map((id) => {
+      const step = flow.steps.find((s) => s.id === id);
+      return esc(step ? labelOf(step) : id);
+    });
+    return `<div class="b in">${esc(turn.in)}</div>
+      <div class="b out">${esc(turn.out)}</div>
+      <div class="trace">${trace.length ? trace.join(' → ') : '—'} · <b>${esc(turn.verdict)}</b>${
+        turn.model ? ' · ai' : ''}</div>`;
+  }).join('') + (simBusy ? '<div class="trace">thinking…</div>' : '');
+  el('sim-log').scrollTop = el('sim-log').scrollHeight;
+
+  const answers = simTurns[simTurns.length - 1].answers || {};
+  el('sim-answers').innerHTML = Object.keys(answers).length
+    ? Object.entries(answers).map(([key, value]) =>
+        `<span class="a"><b>${esc(key)}</b> ${esc(value)}</span>`).join('')
+    : '<span class="hint">Nothing collected yet.</span>';
+}
+
+el('sim-form').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const input = el('sim-input');
+  const message = input.value.trim();
+  if (!message || simBusy || !flow) return;
+
+  input.value = '';
+  simMessages.push(message);
+  simBusy = true;
+  el('sim-send').disabled = true;
+  // The whole conversation is replayed each time, so the run always reflects
+  // the flow as it is right now rather than as it was three messages ago.
+  simTurns = simTurns.concat([{ in: message, out: '…', trace: [], verdict: '', answers: {} }]);
+  renderSim();
+
+  try {
+    const data = await fetch(BASE + '/flow/test', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        flow, messages: simMessages, useModel: el('sim-ai').checked,
+        tenantName: (tenants.find((t) => t.id === tenantId) || {}).name || 'your firm',
+      }),
+    }).then((r) => r.json());
+    simTurns = data.turns || [];
+  } catch (error) {
+    simMessages.pop();
+    simTurns.pop();
+    note('error', ['The simulator could not reach the server.']);
+  } finally {
+    simBusy = false;
+    el('sim-send').disabled = false;
+    renderSim();
+  }
+});
+
+el('sim-reset').addEventListener('click', resetSim);
+el('sim-ai').addEventListener('change', () => { if (simMessages.length) resetSim(); });
+
+window.addEventListener('beforeunload', (event) => {
+  if (dirty) { event.preventDefault(); event.returnValue = ''; }
+});
 
 async function refresh() {
   try {

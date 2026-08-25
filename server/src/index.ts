@@ -9,6 +9,7 @@ import QRCode from "qrcode";
 import { registerAdmin } from "./admin.js";
 import { config } from "./config.js";
 import { logEvent, pool, query, queryOne } from "./db.js";
+import { loadFlow } from "./flow.js";
 import { handleInbound, parseInbound } from "./inbound.js";
 import { buildWaLink, generateToken } from "./tokens.js";
 import { clientIp, isVisitKind, rateLimited, recordVisitSafely } from "./visits.js";
@@ -206,11 +207,25 @@ app.get("/api/session/:token", async (c) => {
 /** Transcript for the live dashboard. */
 app.get("/api/session/:token/messages", async (c) => {
   const token = c.req.param("token").toUpperCase();
-  const conversation = await queryOne<{ id: string; state: string }>(
-    `select id, state from conversations where signup_token = $1`,
+  const conversation = await queryOne<{
+    id: string;
+    state: string;
+    flow: unknown;
+    qualification_config: unknown;
+  }>(
+    `select c.id, c.state, t.flow, t.qualification_config
+       from conversations c
+       join tenants t on t.id = c.tenant_id
+      where c.signup_token = $1`,
     [token],
   );
-  if (!conversation) return c.json({ messages: [], state: null });
+  if (!conversation) return c.json({ messages: [], state: null, questions: [] });
+
+  // The checklist on the page is whatever this tenant's flow actually asks for,
+  // not a fixed three.
+  const questions = loadFlow(conversation.flow, conversation.qualification_config)
+    .steps.filter((step) => step.type === "question")
+    .map((step) => ({ key: step.key, label: step.label }));
 
   const messages = await query(
     `select direction, body, type, created_at from messages
@@ -223,7 +238,12 @@ app.get("/api/session/:token/messages", async (c) => {
     [conversation.id],
   );
 
-  return c.json({ state: conversation.state, messages, qualification: qualification ?? null });
+  return c.json({
+    state: conversation.state,
+    messages,
+    questions,
+    qualification: qualification ?? null,
+  });
 });
 
 /* ------------------------------------------------------------------- pages */

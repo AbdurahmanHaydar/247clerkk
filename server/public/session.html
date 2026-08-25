@@ -164,16 +164,19 @@ h1{font-family:var(--display);font-size:clamp(26px,4vw,36px);line-height:1.15;fo
 const token = (location.pathname.split('/').filter(Boolean).pop() || '').toUpperCase();
 const el = (id) => document.getElementById(id);
 
-const LABELS = {
-  matter_type: 'Matter type',
-  timeline: 'Timeline',
-  contact_name: 'Contact name',
-};
 const VERDICTS = {
   qualified: 'Qualified lead',
   unqualified: 'Not qualified',
   needs_info: 'Collecting details',
+  handoff: 'Needs a person',
 };
+
+// What this number asks for is configurable, so the checklist comes from the
+// API rather than being baked in here.
+let questions = [];
+
+const labelFor = (text) =>
+  String(text).replace(/[_-]+/g, ' ').replace(/^./, (c) => c.toUpperCase()).replace(/[<>&]/g, '');
 
 let connected = false;
 let lastCount = -1;
@@ -200,22 +203,26 @@ function renderThread(messages) {
 
 function renderVerdict(qualification) {
   const slots = (qualification && qualification.extracted) || {};
-  const keys = Object.keys(LABELS);
-  const answered = keys.filter((k) => slots[k]).length;
+  const asked = questions.length
+    ? questions
+    : Object.keys(slots).map((key) => ({ key, label: labelFor(key) }));
+  const answered = asked.filter((q) => slots[q.key]).length;
   const verdict = (qualification && qualification.verdict) || 'needs_info';
 
   const pill = el('verdict-pill');
   pill.className = 'pill ' + verdict;
   pill.textContent = VERDICTS[verdict] || verdict;
 
-  el('score').textContent = answered + ' of ' + keys.length + ' questions answered';
+  el('score').textContent = asked.length
+    ? answered + ' of ' + asked.length + ' questions answered'
+    : 'waiting for the first question';
   el('verdict-meta').textContent = verdict === 'qualified' ? 'ready to book' : verdict.replace('_', ' ');
 
-  el('slots').innerHTML = keys.map((key) => {
-    const value = slots[key];
+  el('slots').innerHTML = asked.map((question) => {
+    const value = slots[question.key];
     return `<li>
       <span class="tick ${value ? '' : 'off'}">${value ? '&#10003;' : '&middot;'}</span>
-      <span><span class="label">${LABELS[key]}</span>
+      <span><span class="label">${labelFor(question.label || question.key)}</span>
       <span class="value ${value ? '' : 'empty'}">${value ? String(value).replace(/[<>&]/g, '') : 'not answered yet'}</span></span>
     </li>`;
   }).join('');
@@ -240,6 +247,7 @@ async function tick() {
     if (!connected) return;
 
     const data = await fetch('/api/session/' + token + '/messages').then((r) => r.json());
+    questions = data.questions || questions;
     if (data.messages.length !== lastCount) {
       lastCount = data.messages.length;
       renderThread(data.messages);

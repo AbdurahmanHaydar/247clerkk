@@ -1,4 +1,5 @@
-import { type QualificationConfig, type Verdict, runIntake } from "./qualify.js";
+import type { Flow } from "./flow.js";
+import { type FlowState, type Verdict, runFlow } from "./engine.js";
 
 export type ReplyContext = {
   tenantName: string;
@@ -9,24 +10,27 @@ export type ReplyContext = {
   history: { direction: "in" | "out"; body: string | null }[];
   tokenJustClaimed: string | null;
   dashboardUrl: string | null;
-  qualificationConfig: QualificationConfig;
-  /** Answers already collected earlier in this conversation. */
-  knownSlots: Record<string, string | null>;
+  /** The tenant's configured intake conversation. */
+  flow: Flow;
+  /** Where this conversation had got to, from conversations.flow_state. */
+  flowState: unknown;
 };
 
 export type ReplyResult = {
   body: string;
-  qualification: {
+  /** Null when the message never reached the flow — plumbing, or unreadable. */
+  intake: {
     verdict: Verdict;
-    slots: Record<string, string | null>;
+    answers: Record<string, string | null>;
     missing: string[];
     model: string | null;
+    state: FlowState;
   } | null;
 };
 
 export async function composeReply(ctx: ReplyContext): Promise<ReplyResult> {
   // The message carrying the signup code is plumbing, not intake — don't run it
-  // through qualification.
+  // through the flow.
   if (ctx.tokenJustClaimed && ctx.dashboardUrl) {
     const who = ctx.profileName ? ` ${ctx.profileName}` : "";
     return {
@@ -34,33 +38,34 @@ export async function composeReply(ctx: ReplyContext): Promise<ReplyResult> {
         `Hi${who} — you're connected to 247clerk. ` +
         `Your live dashboard: ${ctx.dashboardUrl}\n\n` +
         `Now message me the way one of your clients would, and watch it get handled.`,
-      qualification: null,
+      intake: null,
     };
   }
 
   if (ctx.messageType !== "text" || !ctx.body) {
     return {
       body: "I can only read text messages for now — send that through as text and I'll pick it up.",
-      qualification: null,
+      intake: null,
     };
   }
 
-  const outcome = await runIntake({
+  const outcome = await runFlow({
+    flow: ctx.flow,
+    state: ctx.flowState,
+    message: ctx.body,
     tenantName: ctx.tenantName,
     profileName: ctx.profileName,
-    config: ctx.qualificationConfig,
     history: ctx.history,
-    message: ctx.body,
-    knownSlots: ctx.knownSlots,
   });
 
   return {
     body: outcome.reply,
-    qualification: {
+    intake: {
       verdict: outcome.verdict,
-      slots: outcome.slots,
+      answers: outcome.answers,
       missing: outcome.missing,
       model: outcome.model,
+      state: outcome.state,
     },
   };
 }

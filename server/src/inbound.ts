@@ -2,7 +2,7 @@ import type { PoolClient } from "pg";
 import { config } from "./config.js";
 import { tx } from "./db.js";
 import { composeReply } from "./reply.js";
-import { resolveConfig } from "./qualify.js";
+import { loadFlow } from "./flow.js";
 import { extractToken } from "./tokens.js";
 
 /** Shape n8n's Normalize node posts to /internal/wa/inbound. */
@@ -32,6 +32,7 @@ type TenantRow = {
   id: string;
   name: string;
   is_demo: boolean;
+  flow: unknown;
   qualification_config: unknown;
 };
 
@@ -45,6 +46,7 @@ type ContactRow = {
 type ConversationRow = {
   id: string;
   signup_token: string | null;
+  flow_state: unknown;
   stale: boolean;
 };
 
@@ -74,7 +76,7 @@ export async function handleInbound(msg: NormalizedInbound): Promise<InboundResu
   return tx(async (client) => {
     const tenant = await one<TenantRow>(
       client,
-      `select id, name, is_demo, qualification_config from tenants where wa_phone_number_id = $1`,
+      `select id, name, is_demo, flow, qualification_config from tenants where wa_phone_number_id = $1`,
       [msg.phoneNumberId],
     );
     if (!tenant) return skip("unknown_tenant");
@@ -141,13 +143,6 @@ export async function handleInbound(msg: NormalizedInbound): Promise<InboundResu
       [conversation.id, inserted.id],
     );
 
-    const previous = await one<{ extracted: Record<string, string | null> }>(
-      client,
-      `select extracted from qualifications
-        where conversation_id = $1 order by created_at desc limit 1`,
-      [conversation.id],
-    );
-
     const result = await composeReply({
       tenantName: tenant.name,
       profileName: contact.profile_name,
@@ -156,13 +151,12 @@ export async function handleInbound(msg: NormalizedInbound): Promise<InboundResu
       history,
       tokenJustClaimed: claimedToken,
       dashboardUrl: claimedToken ? `${config.publicAppUrl}/s/${claimedToken}` : null,
-      qualificationConfig: resolveConfig(tenant.qualification_config),
-      knownSlots: previous?.extracted ?? {},
+      flow: loadFlow(tenant.flow, tenant.qualification_config),
+      flowState: conversation.flow_state,
     });
 
-    if (result.qualification) {
-      const { verdict, slots, missing, model } = result.qualification;
-      const answered = Object.keys(slots).length - missing.length;
+    if (result.intake) {
+      const { verdict, answers, missing, model, state } = result.intake;
       await client.query(
         `insert into qualifications
            (conversation_id, tenant_id, verdict, score, matter_type, reasons, extracted, model)
@@ -171,18 +165,24 @@ export async function handleInbound(msg: NormalizedInbound): Promise<InboundResu
           conversation.id,
           tenant.id,
           verdict,
-          answered,
-          slots["matter_type"] ?? null,
+          Object.keys(answers).length,
+          answers["matter_type"] ?? null,
           JSON.stringify(
             missing.length === 0
-              ? ["all intake questions answered"]
+              ? ["every question in the flow answered"]
               : missing.map((key) => `missing: ${key}`),
           ),
-          JSON.stringify(slots),
+          JSON.stringify(answers),
           model,
         ],
       );
-      await client.query(`update conversations set state = $1 where id = $2`, [verdict, conversation.id]);
+      // The flow position has to be saved even when the verdict has not moved,
+      // or the next message re-asks the question we just sent.
+      await client.query(`update conversations set state = $1, flow_state = $2 where id = $3`, [
+        verdict,
+        JSON.stringify(state),
+        conversation.id,
+      ]);
     }
 
     return send(client, tenant.id, conversation.id, msg, result.body);
@@ -200,7 +200,7 @@ async function resolveConversation(
 ): Promise<ConversationRow> {
   const existing = await one<ConversationRow>(
     client,
-    `select id, signup_token,
+    `select id, signup_token, flow_state,
             (last_inbound_at is not null and last_inbound_at < now() - interval '24 hours') as stale
        from conversations
       where contact_id = $1 and state <> 'closed'
@@ -217,7 +217,7 @@ async function resolveConversation(
   const created = await one<ConversationRow>(
     client,
     `insert into conversations (tenant_id, contact_id) values ($1, $2)
-     returning id, signup_token, false as stale`,
+     returning id, signup_token, flow_state, false as stale`,
     [tenantId, contactId],
   );
   if (!created) throw new Error("failed to create conversation");

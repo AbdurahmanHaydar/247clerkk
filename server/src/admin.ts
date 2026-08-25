@@ -2,6 +2,7 @@ import { timingSafeEqual } from "node:crypto";
 import type { Hono } from "hono";
 import { config } from "./config.js";
 import { query, queryOne } from "./db.js";
+import { registerFlows } from "./flows.js";
 
 /**
  * The owner-only view. Everything the demo collects — who tried it, their
@@ -35,6 +36,9 @@ export function registerAdmin(app: Hono, page: Serve): void {
   });
 
   app.get("/admin/:token", async (c) => c.html(await page("admin.html")));
+
+  // Reading and editing the intake conversation itself.
+  registerFlows(app);
 
   /** Everything the list view needs, in one round trip. */
   app.get("/admin/:token/data", async (c) => {
@@ -74,9 +78,22 @@ export function registerAdmin(app: Hono, page: Serve): void {
     return c.json({ contact, conversations, messages, qualifications, tokens, events, visits });
   });
 
-  /** Spreadsheet copy of the list — one row per person. */
+  /**
+   * Spreadsheet copy of the list — one row per person. Flows collect whatever
+   * the owner configured, so the answer columns are whatever actually turned
+   * up rather than a fixed three.
+   */
   app.get("/admin/:token/leads.csv", async (c) => {
     const people = await query<Record<string, unknown>>(PEOPLE_SQL);
+
+    const answerKeys = new Set<string>();
+    for (const person of people) {
+      for (const key of Object.keys((person["extracted"] ?? {}) as Record<string, unknown>)) {
+        // contact_name already has a column of its own from the signup form.
+        if (key !== "contact_name") answerKeys.add(key);
+      }
+    }
+
     const columns = [
       "wa_id",
       "profile_name",
@@ -84,8 +101,7 @@ export function registerAdmin(app: Hono, page: Serve): void {
       "company_name",
       "email",
       "verdict",
-      "matter_type",
-      "timeline",
+      ...[...answerKeys].sort(),
       "source",
       "message_total",
       "conversation_count",
