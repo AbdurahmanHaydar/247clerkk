@@ -444,7 +444,7 @@ function renderPeople() {
   }).join('');
 
   for (const button of el('people').querySelectorAll('.person')) {
-    button.addEventListener('click', () => select(button.dataset.id));
+    button.addEventListener('click', () => openPerson(button.dataset.id));
   }
 }
 
@@ -596,7 +596,7 @@ function fact(label, value) {
     <span class="value ${empty ? 'empty' : ''}">${esc(empty ? 'not given' : value)}</span></div>`;
 }
 
-async function select(id, silent) {
+async function openPerson(id, silent) {
   selectedId = id;
   if (!silent) {
     renderPeople();
@@ -1422,7 +1422,7 @@ async function refresh() {
 refresh();
 setInterval(refresh, 10000);
 // Keep the open transcript current without stealing the reader's scroll.
-setInterval(() => { if (selectedId && !document.hidden) select(selectedId, true); }, 15000);
+setInterval(() => { if (selectedId && !document.hidden) openPerson(selectedId, true); }, 15000);
 </script>
 </body>
 </html>
