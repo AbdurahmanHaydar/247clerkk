@@ -13,38 +13,58 @@ export type GeminiRequest = {
 };
 
 /**
+ * A model that has just failed is not tried again until this passes. Without it
+ * every inbound message pays the same failure twice over before reaching the
+ * fallback, and a model that is 503-ing under load stays that way for minutes.
+ */
+const benched = new Map<string, number>();
+
+/**
  * Calls Gemini and parses the structured response.
  *
- * Tries the primary model, then the fallback on 5xx — `gemini-flash-latest`
- * returns 503 under load often enough that a single model is not safe to sit in
- * front of a live WhatsApp number. Throws if every attempt fails; the caller is
- * expected to degrade to a deterministic reply rather than go silent.
+ * Whoever is waiting on this is holding a WhatsApp conversation open, and n8n
+ * gives the whole request 30 seconds before it aborts and the reply never gets
+ * sent. So the call is bounded twice: each attempt gets `geminiTimeoutMs`, and
+ * every attempt together gets `geminiBudgetMs`. Running out of either is a
+ * failure like any other — the caller degrades to a deterministic reply rather
+ * than going silent, which is far better than a late answer nobody receives.
+ *
+ * Each model gets one attempt, in order, and any that fails is benched so the
+ * next message goes straight to one that works. The fallback is the retry —
+ * a second go at a model that just failed is time the sender does not have.
  */
 export async function generateJson<T>(request: GeminiRequest): Promise<T> {
+  const deadline = Date.now() + config.geminiBudgetMs;
   const models = [config.geminiModel, config.geminiFallbackModel].filter(
     (model, index, all) => model && all.indexOf(model) === index,
   );
 
+  const usable = models.filter((model) => (benched.get(model) ?? 0) <= Date.now());
+  if (usable.length === 0) throw new Error(`gemini: ${models.join(", ")} all benched after a recent failure`);
+
   let lastError: unknown;
-  for (const model of models) {
-    for (let attempt = 0; attempt < 2; attempt++) {
-      try {
-        return await callOnce<T>(model, request);
-      } catch (error) {
-        lastError = error;
-        if (!(error instanceof RetryableError)) throw error;
-        if (attempt === 0) await sleep(400);
-      }
+  for (const model of usable) {
+    const remaining = deadline - Date.now();
+    if (remaining <= 0) break;
+
+    try {
+      return await callOnce<T>(model, request, Math.min(config.geminiTimeoutMs, remaining));
+    } catch (error) {
+      lastError = error;
+      bench(model);
     }
   }
   throw lastError ?? new Error("gemini: no models configured");
 }
 
-class RetryableError extends Error {}
+function bench(model: string): void {
+  benched.set(model, Date.now() + config.geminiCooldownMs);
+  console.error(`[gemini] ${model} benched for ${Math.round(config.geminiCooldownMs / 1000)}s`);
+}
 
-async function callOnce<T>(model: string, request: GeminiRequest): Promise<T> {
+async function callOnce<T>(model: string, request: GeminiRequest, timeoutMs: number): Promise<T> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 20_000);
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     const response = await fetch(`${ENDPOINT}/${model}:generateContent`, {
@@ -63,30 +83,22 @@ async function callOnce<T>(model: string, request: GeminiRequest): Promise<T> {
     });
 
     if (!response.ok) {
-      const detail = (await response.text()).slice(0, 400);
-      const message = `gemini ${model} ${response.status}: ${detail}`;
-      // 429/5xx are worth another shot; 4xx means we sent something wrong.
-      if (response.status >= 500 || response.status === 429) throw new RetryableError(message);
-      throw new Error(message);
+      throw new Error(`gemini ${model} ${response.status}: ${(await response.text()).slice(0, 400)}`);
     }
 
     const payload = (await response.json()) as {
       candidates?: { content?: { parts?: { text?: string }[] } }[];
     };
     const text = payload.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!text) throw new RetryableError(`gemini ${model}: empty response`);
+    if (!text) throw new Error(`gemini ${model}: empty response`);
 
     return JSON.parse(text) as T;
   } catch (error) {
     if (error instanceof Error && error.name === "AbortError") {
-      throw new RetryableError(`gemini ${model}: timed out`);
+      throw new Error(`gemini ${model}: timed out after ${timeoutMs}ms`);
     }
     throw error;
   } finally {
     clearTimeout(timeout);
   }
-}
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }

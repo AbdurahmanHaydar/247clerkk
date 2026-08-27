@@ -230,6 +230,16 @@ handler logs it, takes the message in front of it as the answer to the question
 on the table, and carries on with `model = null` recorded. The number never goes
 silent and the flow never stalls.
 
+Which means the model call must **fail fast**, not eventually succeed. n8n gives
+the whole inbound request 30 seconds before it aborts, and an aborted request
+never reaches the Send node — the reply is composed, written to `messages` as
+`pending`, and never delivered, so the number looks dead from the outside. So
+one attempt is capped at `GEMINI_TIMEOUT_MS` and every attempt together at
+`GEMINI_BUDGET_MS`. Each model gets a single attempt; the fallback *is* the
+retry. A model that fails is benched for `GEMINI_COOLDOWN_MS`, so the message
+after an outage starts goes straight to one that works instead of paying the
+same timeout again.
+
 ### State
 
 `conversations.flow_state` holds the step awaiting an answer, every answer so

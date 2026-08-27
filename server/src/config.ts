@@ -14,6 +14,14 @@ export const config = {
   // us. The fallback covers the 503s the flash endpoints throw under load.
   geminiModel: process.env.GEMINI_MODEL ?? "gemini-3.7-flash",
   geminiFallbackModel: process.env.GEMINI_FALLBACK_MODEL ?? "gemini-2.5-flash",
+  /** Per-attempt ceiling on one Gemini call. */
+  geminiTimeoutMs: Number(process.env.GEMINI_TIMEOUT_MS ?? 8_000),
+  /** Ceiling on every attempt together. n8n aborts the inbound request at 30s
+   *  and the reply is then composed but never sent, so the model never gets to
+   *  spend more of that than this. */
+  geminiBudgetMs: Number(process.env.GEMINI_BUDGET_MS ?? 15_000),
+  /** How long a model that just failed is skipped for. */
+  geminiCooldownMs: Number(process.env.GEMINI_COOLDOWN_MS ?? 60_000),
   demoWaNumber: required("DEMO_WA_NUMBER"),
   /** Secret path segment for the owner-only dashboard at /admin/:token.
    *  Unset means the admin routes don't exist at all. */
