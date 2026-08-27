@@ -32,6 +32,30 @@
     {
       "parameters": {
         "method": "POST",
+        "url": "=https://graph.facebook.com/v22.0/{{ $json.phoneNumberId }}/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ messaging_product: 'whatsapp', status: 'read', message_id: $json.messageId, typing_indicator: { type: 'text' } }) }}",
+        "options": { "timeout": 5000 }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-1216, -608],
+      "id": "b3f81c47-2d59-4a06-9e13-5c8074ab21d9",
+      "name": "Typing on",
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "WdjtRC52cpJhGCeZ",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
         "url": "http://172.18.0.1:3000/internal/wa/inbound",
         "sendHeaders": true,
         "headerParameters": {
@@ -136,7 +160,15 @@
       "main": [[{ "node": "Normalize", "type": "main", "index": 0 }]]
     },
     "Normalize": {
-      "main": [[{ "node": "247clerk API", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          { "node": "Typing on", "type": "main", "index": 0 },
+          { "node": "247clerk API", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Typing on": {
+      "main": [[]]
     },
     "247clerk API": {
       "main": [[{ "node": "Reply?", "type": "main", "index": 0 }]]

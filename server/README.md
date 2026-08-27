@@ -8,7 +8,9 @@ qualification and everything the dashboard reads.
 WhatsApp Cloud API
       │
       ▼
-n8n (backend.durih.com)  WhatsApp Trigger → Normalize → HTTP POST
+n8n (backend.durih.com)  WhatsApp Trigger → Normalize ─┬─► Typing on (Meta)
+      │                                                │
+      │                                                └─► HTTP POST
       │                                                    │
       │                             http://172.18.0.1:3000/internal/wa/inbound
       ▼                                                    ▼
@@ -23,6 +25,15 @@ Meta allows exactly one webhook URL per WhatsApp app, and n8n's WhatsApp Trigger
 already holds it with working credentials. Rather than move the registration, n8n
 stays as the pipe and forwards every message here. Conversation state, dedup and
 dashboard queries live in Postgres where they are queryable.
+
+`Typing on` is the reason the fork exists. Composing a reply takes a second or
+two, sometimes longer, and an idle WhatsApp thread in that gap reads as a number
+that did not hear you. So Normalize forks: the topmost branch raises the typing
+bubble with Meta, then the other branch goes and gets the answer. Meta has no
+typing-only call — the request marks the message read and raises the bubble in
+one go, so blue ticks now appear too — and it clears itself when the reply lands
+or after 25 seconds, whichever comes first. The node continues on error: a
+courtesy must never cost a reply.
 
 ## Layout
 
