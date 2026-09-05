@@ -670,6 +670,107 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
 .read-card p{color:var(--muted);font-size:.92rem;margin:0}
 .reading-all{display:inline-block;margin-top:28px;font-weight:600;color:var(--green-dark)}
 
+
+/* ---------- hero trust line ---------- */
+.hero-trust{margin-top:14px;font-size:.92rem;color:var(--muted);max-width:30rem}
+.hero-trust b{color:var(--ink);font-weight:600}
+
+/* ---------- proof ---------- */
+.proof{padding:84px 0 0}
+.proof-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;max-width:800px;margin:0 auto 44px;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);overflow:hidden}
+.proof-strip div{padding:22px 20px;text-align:center;border-right:1px solid var(--line)}
+.proof-strip div:last-child{border-right:none}
+.proof-strip b{display:block;font-family:var(--display);font-weight:800;font-size:1.9rem;letter-spacing:-.02em;line-height:1.1;color:var(--green-dark)}
+.proof-strip span{display:block;margin-top:5px;font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.quote-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.quote{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px 26px;margin:0;display:flex;flex-direction:column}
+.quote blockquote{margin:0;font-size:1.02rem;line-height:1.55;flex:1}
+/* The mark is decoration, not content — it must not land in the accessible name. */
+.quote blockquote::before{content:"“";display:block;font-family:var(--display);font-weight:800;font-size:2.4rem;line-height:.6;color:var(--green);margin-bottom:14px}
+.quote figcaption{margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.quote .who{display:block;font-weight:600;font-size:.95rem}
+.quote .meta{display:block;margin-top:3px;font-family:var(--mono);font-size:.74rem;letter-spacing:.04em;color:var(--muted)}
+.quote .result{display:block;margin-top:14px;background:var(--bubble);color:var(--green-dark);border-radius:6px;padding:9px 12px;font-family:var(--mono);font-size:.76rem;letter-spacing:.03em;line-height:1.45}
+.proof-note{max-width:680px;margin:34px auto 0;text-align:center;color:var(--muted);font-size:.88rem}
+
+/* ---------- the maths / ROI ---------- */
+.roi{padding:84px 0}
+.roi-card{display:grid;grid-template-columns:1.05fr .95fr;gap:0;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:0 30px 60px -40px rgba(16,34,28,.45);max-width:1000px;margin:0 auto}
+.roi-card>*{min-width:0}
+.roi-controls{padding:34px 32px;display:grid;gap:24px;align-content:start}
+.roi-ctl{display:block}
+.roi-ctl .roi-k{display:block;font-size:.94rem;font-weight:500}
+.roi-ctl .roi-v{display:block;font-family:var(--display);font-weight:800;font-size:1.45rem;letter-spacing:-.02em;color:var(--green-dark);margin:2px 0 8px}
+.roi-ctl input[type=range]{width:100%;accent-color:var(--green);height:22px;cursor:pointer}
+.roi-ctl input[type=range]:focus-visible{outline:3px solid var(--stamp);outline-offset:4px}
+.roi-out{background:var(--ink);color:var(--paper);padding:34px 32px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.roi-out::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(420px 260px at 80% 0%,rgba(94,214,148,.16),transparent 70%)}
+.roi-out>*{position:relative}
+.roi-label{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#9FB2A8}
+.roi-big{font-family:var(--display);font-weight:800;font-size:clamp(2.4rem,5vw,3.4rem);letter-spacing:-.03em;line-height:1.02;color:#5ED694;margin:10px 0 14px}
+.roi-line{color:#C9D4C9;font-size:1rem;line-height:1.55}
+.roi-cta{margin-top:26px;display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.roi-note{font-family:var(--mono);font-size:.74rem;color:#9FB2A8}
+.roi-caveat{max-width:720px;margin:26px auto 0;text-align:center;color:var(--muted);font-size:.88rem;line-height:1.7}
+
+/* ---------- comparison ---------- */
+.compare{padding:0 0 84px}
+/* Five columns will not fit a phone; let the table scroll rather than crush it. */
+.cmp-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:var(--radius);background:var(--card)}
+table.cmp{border-collapse:collapse;width:100%;min-width:760px;font-size:.92rem}
+table.cmp th,table.cmp td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+table.cmp thead th{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:400;background:#FBFCF9;border-bottom:1px solid var(--line)}
+table.cmp thead th.me{color:var(--green-dark);font-weight:500}
+table.cmp tbody th{font-weight:500;color:var(--ink);width:29%}
+table.cmp td{color:var(--muted);text-align:center;width:17.75%}
+table.cmp .col-me{background:#F3FBF5;color:var(--ink);font-weight:500}
+table.cmp tbody tr:last-child th,table.cmp tbody tr:last-child td{border-bottom:none}
+.y,.n,.p{display:inline-block;font-weight:600}
+.y{color:var(--green-dark)}
+.n{color:#A34424}
+.p{color:var(--muted);font-weight:400;font-size:.86rem}
+.cmp-note{max-width:720px;margin:20px auto 0;text-align:center;color:var(--muted);font-size:.85rem}
+
+/* ---------- repeated CTA bar ---------- */
+.cta-bar{background:var(--bubble);border-top:1px solid rgba(31,168,85,.3);border-bottom:1px solid rgba(31,168,85,.3);padding:30px 0}
+.cta-bar-inner{display:flex;align-items:center;justify-content:space-between;gap:26px;flex-wrap:wrap}
+.cta-bar p{font-family:var(--display);font-weight:600;font-size:1.25rem;letter-spacing:-.01em;margin:0;max-width:34rem}
+
+/* ---------- risk reversal ---------- */
+.risk{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;max-width:1000px;margin:44px auto 0}
+.risk div{display:flex;align-items:flex-start;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:.9rem;line-height:1.4}
+.risk svg{flex:0 0 auto;margin-top:1px;stroke:var(--green);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- founder ---------- */
+.founder{padding:0 0 96px}
+.founder-card{display:grid;grid-template-columns:132px 1fr;gap:32px;align-items:start;max-width:840px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:34px 34px;box-shadow:0 26px 55px -38px rgba(16,34,28,.35)}
+.founder-face{width:132px;height:132px;border-radius:50%;background:var(--bubble);border:1px dashed var(--green);display:grid;place-items:center;font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-align:center;color:var(--green-dark);padding:10px;line-height:1.4}
+.founder-h{font-size:clamp(1.4rem,2.6vw,1.85rem);margin:12px 0 12px}
+.founder p{color:var(--muted)}
+.founder .founder-sign{margin-top:16px;font-family:var(--mono);font-size:.82rem;color:var(--ink)}
+.founder .founder-sign a{color:var(--green-dark)}
+
+@media (max-width:900px){
+  .quote-grid{grid-template-columns:1fr}
+  .roi-card{grid-template-columns:1fr}
+  .founder-card{grid-template-columns:1fr;gap:22px;justify-items:start}
+}
+@media (max-width:600px){
+  .proof{padding-top:56px}
+  .roi{padding:56px 0}
+  .compare{padding-bottom:56px}
+  .founder{padding-bottom:64px}
+  .proof-strip{grid-template-columns:1fr}
+  .proof-strip div{border-right:none;border-bottom:1px solid var(--line)}
+  .proof-strip div:last-child{border-bottom:none}
+  .roi-controls,.roi-out{padding:26px 20px}
+  .roi-cta .btn{align-self:stretch;width:100%;justify-content:center}
+  .cta-bar-inner{flex-direction:column;align-items:flex-start}
+  .cta-bar .btn{width:100%;justify-content:center}
+  .cta-bar p{font-size:1.1rem}
+  .founder-card{padding:26px 22px}
+}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 </style>
 <script async src="https://app.247clerk.com/t.js"></script>
 </head>
@@ -681,10 +782,11 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
     <div class="nav-links">
       <a href="#how">How it works</a>
       <a href="#who">Who it's for</a>
+      <a href="#cost">The maths</a>
       <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
       <a href="/blog">Guides</a>
-      <a href="#signup" class="btn btn-green">Start free trial</a>
+      <a href="https://app.247clerk.com/start" class="btn btn-green" data-src="nav">Try it free</a>
     </div>
     <button class="menu-btn" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
   </div>
@@ -692,6 +794,7 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
     <a href="#how">How it works</a>
     <a href="#who">Who it's for</a>
     <a href="#dashboard">Dashboard</a>
+    <a href="#cost">The maths</a>
     <a href="#pricing">Pricing</a>
     <a href="#faq">FAQ</a>
     <a href="/blog">Guides</a>
@@ -703,16 +806,17 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
     <div>
       <span class="eyebrow">Clerk on duty · 24/7</span>
       <h1>Your practice closes at five.<br>Your clerk <span class="never">never does.</span></h1>
-      <p class="lede">247clerk is the WhatsApp clerk for attorneys, immigration lawyers, tax practitioners and estate agents. It handles the after-hours enquiry the moment it lands — screening the matter, answering the process and fee questions, booking the consultation and collecting the consultation fee. You arrive to a diary of qualified consults, not a queue of tyre-kickers.</p>
+      <p class="lede">247clerk answers your firm’s WhatsApp the second an enquiry lands — screening the matter, answering the fee and process questions, booking the consultation and taking the fee. You arrive to a diary of qualified consults, not a queue of tyre-kickers.</p>
       <div class="hero-ctas">
         <a href="https://app.247clerk.com/start" class="btn btn-green btn-wa" data-src="hero"><svg class="wa-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.15h-.01a8.24 8.24 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.83 2.42a8.19 8.19 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23Zm4.52-6.17c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.15.16-.29.18-.53.06-.25-.13-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.44.13-.15.17-.25.25-.41.09-.17.04-.31-.02-.44-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.17 0-.44.06-.67.31-.23.25-.87.86-.87 2.08 0 1.23.89 2.41 1.02 2.58.12.16 1.75 2.67 4.23 3.75.59.25 1.05.4 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.29Z"/></svg><span>Try it on WhatsApp</span></a>
         <a href="#how" class="btn btn-ghost">See how intake works</a>
       </div>
       <p class="hero-note">Takes a minute. Nothing to install.</p>
+      <p class="hero-trust">Built for South African practices — POPIA operator agreement on request, consultation fees settled straight into your account.</p>
       <div class="hero-proof">
-        <div><b>15 min</b><span>to go live</span></div>
         <div><b>Seconds</b><span>to first reply</span></div>
-        <div><b>24/7</b><span>intake on duty</span></div>
+        <div><b>15 min</b><span>to go live</span></div>
+        <div><b>R0</b><span>to try it · no card</span></div>
       </div>
     </div>
 
@@ -779,6 +883,106 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
   </div>
 </div>
 
+<!-- HIDDEN UNTIL FILLED IN. Replace every [BRACKET] with a real, verifiable
+figure or quote, then delete this comment wrapper to put the section back
+on the page. If you cannot back a number, delete that item rather than
+rounding it up. Practice descriptors are anonymised because intake is
+privileged — they still have to describe real practices.
+<section class="proof" id="proof">
+  <div class="wrap">
+    <div class="section-head reveal" style="margin-left:auto;margin-right:auto;text-align:center">
+      <span class="kicker">Practices already on duty</span>
+      <h2>The 22:00 enquiry stopped going cold</h2>
+      <p>Firms running 247clerk on their own number. Named practices withheld &mdash; intake conversations are privileged.</p>
+    </div>
+
+    <div class="proof-strip reveal">
+      <div><b>[N]</b><span>practices on duty</span></div>
+      <div><b>[N]</b><span>after-hours enquiries handled</span></div>
+      <div><b>[N]%</b><span>answered inside a minute</span></div>
+    </div>
+
+    <div class="quote-grid">
+      <figure class="quote reveal">
+        <blockquote>[QUOTE &mdash; what changed for them, in their own words. Two sentences. The best ones name a specific matter they would have lost.]</blockquote>
+        <figcaption>
+          <span class="who">[Immigration practice &middot; Cape Town]</span>
+          <span class="meta">[4 fee earners &middot; on 247clerk since March]</span>
+        </figcaption>
+        <span class="result">[Result &mdash; e.g. 14 consultations booked after hours in month one]</span>
+      </figure>
+      <figure class="quote reveal">
+        <blockquote>[QUOTE &mdash; ideally one that handles an objection: the clerk knowing its limits, clients not minding, POPIA.]</blockquote>
+        <figcaption>
+          <span class="who">[Conveyancing firm &middot; Durban]</span>
+          <span class="meta">[2 partners &middot; on 247clerk since May]</span>
+        </figcaption>
+        <span class="result">[Result &mdash; e.g. R18 000 in consultation fees collected before 08:00]</span>
+      </figure>
+      <figure class="quote reveal">
+        <blockquote>[QUOTE &mdash; ideally about the time saved on tyre-kickers, not just the leads won.]</blockquote>
+        <figcaption>
+          <span class="who">[Tax practice &middot; Johannesburg]</span>
+          <span class="meta">[6 fee earners &middot; on 247clerk since filing season]</span>
+        </figcaption>
+        <span class="result">[Result &mdash; e.g. 7 hours a week of screening calls off the partners' desks]</span>
+      </figure>
+    </div>
+
+    <p class="proof-note reveal">Rather see it than read about it? Message the clerk yourself and watch a matter get screened in real time &mdash; no signup, no card.</p>
+  </div>
+</section>
+-->
+
+
+<section class="roi" id="cost">
+  <div class="wrap">
+    <div class="section-head reveal" style="margin-left:auto;margin-right:auto;text-align:center">
+      <span class="kicker">The maths</span>
+      <h2>What does the silence actually cost?</h2>
+      <p>Most practices have never put a number on a missed enquiry. Take thirty seconds and put one on yours.</p>
+    </div>
+
+    <div class="roi-card reveal">
+      <div class="roi-controls">
+        <label class="roi-ctl">
+          <span class="roi-k">Enquiries that arrive after hours, a week</span>
+          <span class="roi-v" id="roiVEnq">12</span>
+          <input type="range" id="roiEnq" min="2" max="60" step="1" value="12" aria-label="After-hours enquiries a week">
+        </label>
+        <label class="roi-ctl">
+          <span class="roi-k">Share that go cold before you reply</span>
+          <span class="roi-v" id="roiVCold">40%</span>
+          <input type="range" id="roiCold" min="5" max="80" step="5" value="40" aria-label="Share of enquiries that go cold before you reply">
+        </label>
+        <label class="roi-ctl">
+          <span class="roi-k">Of the ones you do answer, share that instruct you</span>
+          <span class="roi-v" id="roiVConv">25%</span>
+          <input type="range" id="roiConv" min="5" max="60" step="5" value="25" aria-label="Share of answered enquiries that become instructions">
+        </label>
+        <label class="roi-ctl">
+          <span class="roi-k">What one instruction is worth to the practice</span>
+          <span class="roi-v" id="roiVVal">R8 000</span>
+          <input type="range" id="roiVal" min="1000" max="100000" step="1000" value="8000" aria-label="Value of one instruction">
+        </label>
+      </div>
+
+      <div class="roi-out">
+        <span class="roi-label">Walking out the door each month</span>
+        <div class="roi-big" id="roiLoss" aria-live="polite">R0</div>
+        <p class="roi-line" id="roiLine"></p>
+        <div class="roi-cta">
+          <a href="https://app.247clerk.com/start" class="btn btn-green btn-wa" data-src="roi"><svg class="wa-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.15h-.01a8.24 8.24 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.83 2.42a8.19 8.19 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23Zm4.52-6.17c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.15.16-.29.18-.53.06-.25-.13-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.44.13-.15.17-.25.25-.41.09-.17.04-.31-.02-.44-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.17 0-.44.06-.67.31-.23.25-.87.86-.87 2.08 0 1.23.89 2.41 1.02 2.58.12.16 1.75 2.67 4.23 3.75.59.25 1.05.4 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.29Z"/></svg><span>Try it on WhatsApp</span></a>
+          <span class="roi-note">No signup, no card. About a minute.</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="roi-caveat reveal">Your numbers, your assumptions &mdash; we are not going to pretend we know your conversion rate. The point is not the exact figure. It is whether it is bigger than R1&nbsp;195.</p>
+  </div>
+</section>
+
+
 <section class="ledger-section">
   <div class="wrap">
     <div class="section-head reveal">
@@ -796,81 +1000,6 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
       <div class="ledger-row"><span class="t">03:52</span><span class="what"><b>Escalated to attorney</b> — urgent interdict, deadline in 48h</span><span class="tag">Escalated</span></div>
       <div class="ledger-row"><span class="t">06:30</span><span class="what"><b>Reminders sent</b> — 6 consults confirmed, documents requested</span><span class="tag">Confirmed</span></div>
       <div class="ledger-total"><span>NIGHT SHIFT TOTAL</span><span>14 enquiries · 4 consults booked · R4 500 collected · 0 missed</span></div>
-    </div>
-  </div>
-</section>
-
-<section class="how" id="how">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <span class="kicker">Setup</span>
-      <h2>Hired in 15 minutes. Working forever.</h2>
-      <p>Three steps, in order — because that's genuinely all there is.</p>
-    </div>
-    <div class="steps">
-      <div class="step reveal">
-        <span class="num">STEP 01</span>
-        <h3>Teach it your practice</h3>
-        <p>Paste your website, fee schedule, or just type your standard answers. Your clerk learns your practice areas, consultation fees, turnaround times and tone — and you set the intake questions that separate a real instruction from a time-waster.</p>
-      </div>
-      <div class="step reveal">
-        <span class="num">STEP 02</span>
-        <h3>Connect your WhatsApp</h3>
-        <p>Link the business number your clients already message, or get a new one. Nothing to download on their side — they WhatsApp your firm exactly as they do today.</p>
-      </div>
-      <div class="step reveal">
-        <span class="num">STEP 03</span>
-        <h3>Open your diary</h3>
-        <p>Connect Google Calendar or use ours, plus PayFast or Stripe. Your clerk offers only slots you're genuinely free, books the consultation, sends the fee link to confirm it, and handles reminders, document lists and reschedules on its own.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="practices" id="who">
-  <div class="wrap">
-    <div class="section-head reveal" style="margin-left:auto;margin-right:auto;text-align:center">
-      <span class="kicker">Who it's for</span>
-      <h2>Built for practices where one missed enquiry is expensive</h2>
-      <p>A salon loses a R280 booking when nobody answers at 22:00. You lose an instruction. 247clerk is built for the second problem.</p>
-    </div>
-    <div class="practice-grid">
-      <div class="practice reveal">
-        <h3><a href="/for/attorneys">Attorneys &amp; law firms</a></h3>
-        <p>Screens the matter, confirms practice area and urgency, surfaces the parties for a conflict check, and books a paid first consultation instead of letting the enquiry go to the firm down the road.</p>
-        <a class="practice-more" href="/for/attorneys">How it works for this practice &rarr;</a>
-        <span class="cost">One lost instruction &gt; a year of 247clerk</span>
-      </div>
-      <div class="practice reveal">
-        <h3><a href="/for/immigration-attorneys">Immigration lawyers</a></h3>
-        <p>Enquiries arrive at all hours and across time zones, usually with a deadline already running. Your clerk establishes visa type, rejection dates and appeal windows in the client's own language, and flags anything urgent for the morning.</p>
-        <a class="practice-more" href="/for/immigration-attorneys">How it works for this practice &rarr;</a>
-        <span class="cost">Deadlines caught, not discovered</span>
-      </div>
-      <div class="practice reveal">
-        <h3><a href="/for/tax-practitioners">Tax practitioners &amp; accountants</a></h3>
-        <p>Handles the endless "what does a return cost" and "SARS sent me a letter" traffic, establishes the amount in dispute and the assessment date, and books the consultation for anything genuinely worth your hour.</p>
-        <a class="practice-more" href="/for/tax-practitioners">How it works for this practice &rarr;</a>
-        <span class="cost">Filing season without the inbox</span>
-      </div>
-      <div class="practice reveal">
-        <h3><a href="/for/conveyancers">Conveyancers &amp; property law</a></h3>
-        <p>Answers transfer cost, bond and timeline questions instantly, confirms whether an offer has actually been signed, and routes live transfers to you while the tyre-kickers file themselves.</p>
-        <a class="practice-more" href="/for/conveyancers">How it works for this practice &rarr;</a>
-        <span class="cost">Every transfer starts with a question</span>
-      </div>
-      <div class="practice reveal">
-        <h3><a href="/for/estate-agents">Estate agents &amp; agencies</a></h3>
-        <p>Property enquiries land at night and go cold by morning. Your clerk replies in seconds, confirms budget, finance status and timeline, books the viewing straight into your diary, and hands you buyers who are actually ready.</p>
-        <a class="practice-more" href="/for/estate-agents">How it works for this practice &rarr;</a>
-        <span class="cost">First to reply wins the mandate</span>
-      </div>
-      <div class="practice reveal">
-        <h3><a href="/for/financial-advisers">Financial &amp; estate advisers</a></h3>
-        <p>Screens for assets, mandate type and advice needs before a single minute of your time is spent, books the discovery meeting, and files everything else with the reason it wasn't a fit.</p>
-        <a class="practice-more" href="/for/financial-advisers">How it works for this practice &rarr;</a>
-        <span class="cost">Qualified meetings only</span>
-      </div>
     </div>
   </div>
 </section>
@@ -932,6 +1061,100 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
   </div>
 </section>
 
+<section class="practices" id="who">
+  <div class="wrap">
+    <div class="section-head reveal" style="margin-left:auto;margin-right:auto;text-align:center">
+      <span class="kicker">Who it's for</span>
+      <h2>Built for practices where one missed enquiry is expensive</h2>
+      <p>A salon loses a R280 booking when nobody answers at 22:00. You lose an instruction. 247clerk is built for the second problem.</p>
+    </div>
+    <div class="practice-grid">
+      <div class="practice reveal">
+        <h3><a href="/for/attorneys">Attorneys &amp; law firms</a></h3>
+        <p>Screens the matter, confirms practice area and urgency, surfaces the parties for a conflict check, and books a paid first consultation instead of letting the enquiry go to the firm down the road.</p>
+        <a class="practice-more" href="/for/attorneys">How it works for this practice &rarr;</a>
+        <span class="cost">One lost instruction &gt; a year of 247clerk</span>
+      </div>
+      <div class="practice reveal">
+        <h3><a href="/for/immigration-attorneys">Immigration lawyers</a></h3>
+        <p>Enquiries arrive at all hours and across time zones, usually with a deadline already running. Your clerk establishes visa type, rejection dates and appeal windows in the client's own language, and flags anything urgent for the morning.</p>
+        <a class="practice-more" href="/for/immigration-attorneys">How it works for this practice &rarr;</a>
+        <span class="cost">Deadlines caught, not discovered</span>
+      </div>
+      <div class="practice reveal">
+        <h3><a href="/for/tax-practitioners">Tax practitioners &amp; accountants</a></h3>
+        <p>Handles the endless "what does a return cost" and "SARS sent me a letter" traffic, establishes the amount in dispute and the assessment date, and books the consultation for anything genuinely worth your hour.</p>
+        <a class="practice-more" href="/for/tax-practitioners">How it works for this practice &rarr;</a>
+        <span class="cost">Filing season without the inbox</span>
+      </div>
+      <div class="practice reveal">
+        <h3><a href="/for/conveyancers">Conveyancers &amp; property law</a></h3>
+        <p>Answers transfer cost, bond and timeline questions instantly, confirms whether an offer has actually been signed, and routes live transfers to you while the tyre-kickers file themselves.</p>
+        <a class="practice-more" href="/for/conveyancers">How it works for this practice &rarr;</a>
+        <span class="cost">Every transfer starts with a question</span>
+      </div>
+      <div class="practice reveal">
+        <h3><a href="/for/estate-agents">Estate agents &amp; agencies</a></h3>
+        <p>Property enquiries land at night and go cold by morning. Your clerk replies in seconds, confirms budget, finance status and timeline, books the viewing straight into your diary, and hands you buyers who are actually ready.</p>
+        <a class="practice-more" href="/for/estate-agents">How it works for this practice &rarr;</a>
+        <span class="cost">First to reply wins the mandate</span>
+      </div>
+      <div class="practice reveal">
+        <h3><a href="/for/financial-advisers">Financial &amp; estate advisers</a></h3>
+        <p>Screens for assets, mandate type and advice needs before a single minute of your time is spent, books the discovery meeting, and files everything else with the reason it wasn't a fit.</p>
+        <a class="practice-more" href="/for/financial-advisers">How it works for this practice &rarr;</a>
+        <span class="cost">Qualified meetings only</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="compare" id="compare">
+  <div class="wrap">
+    <div class="section-head reveal" style="margin-left:auto;margin-right:auto;text-align:center">
+      <span class="kicker">The alternatives</span>
+      <h2>What else answers at 22:47?</h2>
+      <p>The honest comparison. Voicemail is free &mdash; it is also why the enquiry went to the firm down the road.</p>
+    </div>
+
+    <div class="cmp-wrap reveal">
+      <table class="cmp">
+        <thead>
+          <tr>
+            <th scope="col"><span class="sr-only">Capability</span></th>
+            <th scope="col" class="me">247clerk</th>
+            <th scope="col">Voicemail &amp; &ldquo;we&rsquo;ll call back&rdquo;</th>
+            <th scope="col">Part-time receptionist</th>
+            <th scope="col">Call-answering service</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Cost a month</th><td class="col-me">From R495</td><td>R0</td><td>R8&nbsp;000&ndash;R15&nbsp;000</td><td>R2&nbsp;500&ndash;R6&nbsp;000</td></tr>
+          <tr><th scope="row">Replies inside a minute</th><td class="col-me"><span class="y">Yes</span></td><td><span class="n">No</span></td><td><span class="p">Office hours only</span></td><td><span class="y">Yes</span></td></tr>
+          <tr><th scope="row">On duty at 02:00, Sundays and month-end</th><td class="col-me"><span class="y">Yes</span></td><td><span class="n">No</span></td><td><span class="n">No</span></td><td><span class="p">At a premium</span></td></tr>
+          <tr><th scope="row">Answers fee, process and turnaround questions</th><td class="col-me"><span class="y">Yes</span></td><td><span class="n">No</span></td><td><span class="p">The ones it knows</span></td><td><span class="p">Takes a message</span></td></tr>
+          <tr><th scope="row">Screens the matter against your criteria</th><td class="col-me"><span class="y">Yes</span></td><td><span class="n">No</span></td><td><span class="p">Roughly</span></td><td><span class="n">No</span></td></tr>
+          <tr><th scope="row">Books straight into your diary</th><td class="col-me"><span class="y">Yes</span></td><td><span class="n">No</span></td><td><span class="y">Yes</span></td><td><span class="p">Rarely</span></td></tr>
+          <tr><th scope="row">Takes the consultation fee at booking</th><td class="col-me"><span class="y">Yes</span></td><td><span class="n">No</span></td><td><span class="n">No</span></td><td><span class="n">No</span></td></tr>
+          <tr><th scope="row">Full conversation saved to the file</th><td class="col-me"><span class="y">Yes</span></td><td><span class="n">No</span></td><td><span class="n">No</span></td><td><span class="p">A summary</span></td></tr>
+          <tr><th scope="row">Works on WhatsApp, where clients already message you</th><td class="col-me"><span class="y">Yes</span></td><td><span class="n">No</span></td><td><span class="n">No</span></td><td><span class="p">Phone only</span></td></tr>
+          <tr><th scope="row">Greets the client who walks into reception</th><td class="col-me"><span class="n">No</span></td><td><span class="n">No</span></td><td><span class="y">Yes</span></td><td><span class="n">No</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="cmp-note reveal">Receptionist and answering-service figures are typical South African ranges, not quotes &mdash; check them in your own city. And no, a clerk will never greet someone at your front desk. It was never meant to.</p>
+  </div>
+</section>
+
+<div class="cta-bar reveal">
+  <div class="wrap cta-bar-inner">
+    <p>Stop reading about it. Message the clerk the way a client would, from your own phone.</p>
+    <a href="https://app.247clerk.com/start" class="btn btn-green btn-wa" data-src="compare"><svg class="wa-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.15h-.01a8.24 8.24 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.83 2.42a8.19 8.19 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23Zm4.52-6.17c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.15.16-.29.18-.53.06-.25-.13-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.44.13-.15.17-.25.25-.41.09-.17.04-.31-.02-.44-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.17 0-.44.06-.67.31-.23.25-.87.86-.87 2.08 0 1.23.89 2.41 1.02 2.58.12.16 1.75 2.67 4.23 3.75.59.25 1.05.4 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.29Z"/></svg><span>Try it on WhatsApp</span></a>
+  </div>
+</div>
+
+
 <section class="pricing" id="pricing">
   <div class="wrap">
     <div class="section-head reveal" style="margin-left:auto;margin-right:auto;text-align:center">
@@ -990,8 +1213,61 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
     </div>
     <p class="price-note reveal">Pay annually and get two months free. The free trial runs 14 days or 25 enquiries, whichever comes first. One enquiry is one client conversation, however many messages it takes &mdash; up to 15 clerk replies. Enquiries from outside South Africa count as two. Your clerk never stops mid-conversation because you&rsquo;ve hit a limit; set a monthly cap in your dashboard and we&rsquo;ll tell you at 80%.</p>
     <p class="price-note reveal">From 1 October 2026 Meta charges businesses for every WhatsApp reply. It&rsquo;s included in your plan &mdash; no separate WhatsApp bill to reconcile.</p>
+    <div class="risk reveal">
+      <div><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.6 9 17.6 20 6.6"/></svg><span>No card to try it</span></div>
+      <div><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.6 9 17.6 20 6.6"/></svg><span>14 days free, then cancel any time</span></div>
+      <div><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.6 9 17.6 20 6.6"/></svg><span>We set it up with you &mdash; you build nothing</span></div>
+      <div><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.6 9 17.6 20 6.6"/></svg><span>Your number stays yours, always</span></div>
+      <div><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.6 9 17.6 20 6.6"/></svg><span>Conversations never train public models</span></div>
+    </div>
+
   </div>
 </section>
+
+<section class="how" id="how">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Setup</span>
+      <h2>Hired in 15 minutes. Working forever.</h2>
+      <p>Three steps, in order — because that's genuinely all there is.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <span class="num">STEP 01</span>
+        <h3>Teach it your practice</h3>
+        <p>Paste your website, fee schedule, or just type your standard answers. Your clerk learns your practice areas, consultation fees, turnaround times and tone — and you set the intake questions that separate a real instruction from a time-waster.</p>
+      </div>
+      <div class="step reveal">
+        <span class="num">STEP 02</span>
+        <h3>Connect your WhatsApp</h3>
+        <p>Link the business number your clients already message, or get a new one. Nothing to download on their side — they WhatsApp your firm exactly as they do today.</p>
+      </div>
+      <div class="step reveal">
+        <span class="num">STEP 03</span>
+        <h3>Open your diary</h3>
+        <p>Connect Google Calendar or use ours, plus PayFast or Stripe. Your clerk offers only slots you're genuinely free, books the consultation, sends the fee link to confirm it, and handles reminders, document lists and reschedules on its own.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HIDDEN UNTIL FILLED IN. Replace [YOUR NAME] and write the note in your own
+voice, first person, then delete this comment wrapper. Swap .founder-face
+for a real photo: <img class="founder-face" src="/assets/founder.jpg" alt="">
+A faceless vendor is the hardest thing to hand client intake to.
+<section class="founder">
+  <div class="wrap founder-card reveal">
+    <div class="founder-face" aria-hidden="true">[ADD A PHOTO]</div>
+    <div>
+      <span class="kicker">Who&rsquo;s behind it</span>
+      <h2 class="founder-h">You are not buying this from a call centre.</h2>
+      <p>[Two or three sentences, first person, in your own voice. What you saw that made you build it &mdash; the firm that lost an instruction to a Sunday, the practice manager drowning in &ldquo;what does a transfer cost&rdquo;. Say plainly that you built it for South African practices, and why that matters.]</p>
+      <p class="founder-sign">[YOUR NAME], founder &middot; <a href="mailto:admin@247clerk.com">admin@247clerk.com</a> &mdash; I answer this address myself.</p>
+    </div>
+  </div>
+</section>
+-->
+
 
 <section class="faq" id="faq">
   <div class="wrap">
@@ -1183,6 +1459,34 @@ tick(); setInterval(tick, 1000);
     document.querySelectorAll('iframe[data-tally-src]').forEach(function(f){ f.src = f.dataset.tallySrc; });
   };
   document.body.appendChild(s);
+})();
+// ---- the maths: what the silence costs ----
+(function(){
+  const el = id => document.getElementById(id);
+  const enq = el('roiEnq'), cold = el('roiCold'), conv = el('roiConv'), val = el('roiVal');
+  if (!enq) return;
+  const money = n => 'R' + Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  const PLAN = 1195; // Full Shift — the plan most practices land on
+  function draw(){
+    const e = +enq.value, c = +cold.value / 100, k = +conv.value / 100, v = +val.value;
+    el('roiVEnq').textContent = e;
+    el('roiVCold').textContent = cold.value + '%';
+    el('roiVConv').textContent = conv.value + '%';
+    el('roiVVal').textContent = money(v);
+    // A month is 4.33 weeks. Cold enquiries are assumed to instruct at the same
+    // rate as answered ones — the honest assumption, not the flattering one.
+    const lostMatters = e * 4.33 * c * k;
+    el('roiLoss').textContent = money(lostMatters * v);
+    const rounds = Math.round(v / PLAN);
+    const covers = rounds >= 2
+      ? 'Winning back one of them covers 247clerk ' + rounds + '× over.'
+      : (v >= PLAN ? 'Winning back one of them more than covers 247clerk.'
+                   : 'Two of them back a month and 247clerk has paid for itself.');
+    el('roiLine').textContent = 'That is roughly ' + lostMatters.toFixed(1).replace(/\.0$/, '') +
+      ' instructions a month you never hear about. ' + covers;
+  }
+  [enq, cold, conv, val].forEach(i => i.addEventListener('input', draw));
+  draw();
 })();
 </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"f36d85e5f5b043faae468c0568321834","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
