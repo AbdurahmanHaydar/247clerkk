@@ -35,6 +35,7 @@ export const config = {
   geoEnabled: (process.env.GEOIP_ENABLED ?? "true") !== "false",
   /** {ip} is substituted. ipwho.is is free, https and needs no key. */
   geoUrl: process.env.GEOIP_URL ?? "https://ipwho.is/{ip}",
-  /** Free messages a single phone number gets on the shared demo number. */
-  demoMessageCap: Number(process.env.DEMO_MESSAGE_CAP ?? 25),
+  /** Free messages one demo run gets on the shared demo number. Resets when the
+   *  same number comes back with a new signup code. */
+  demoMessageCap: Number(process.env.DEMO_MESSAGE_CAP ?? 60),
 };

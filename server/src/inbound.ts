@@ -95,7 +95,18 @@ export async function handleInbound(msg: NormalizedInbound): Promise<InboundResu
     if (!contact) return skip("contact_upsert_failed");
     if (contact.blocked) return skip("blocked");
 
-    const conversation = await resolveConversation(client, tenant.id, contact.id);
+    // A returning visitor comes back with a fresh code from the session page.
+    // The code, not the phone number, decides which run of the demo this is, so
+    // it gets claimed before anything reads the conversation.
+    const claimedToken = await claimToken(client, tenant.id, contact.id, msg.text);
+
+    // A new code restarts the demo: the finished conversation is closed so the
+    // flow runs from the top again, and the free messages start over.
+    const messageCount = claimedToken
+      ? await restartDemoAllowance(client, contact.id)
+      : contact.message_count;
+
+    const conversation = await resolveConversation(client, tenant.id, contact.id, claimedToken !== null);
 
     // Meta retries webhooks. The unique constraint on wa_message_id is the real
     // guard — if this insert returns nothing we have already replied to it.
@@ -116,14 +127,12 @@ export async function handleInbound(msg: NormalizedInbound): Promise<InboundResu
       [conversation.id],
     );
 
-    const claimedToken = conversation.signup_token
-      ? null
-      : await claimToken(client, tenant.id, contact.id, conversation.id, msg.text);
+    if (claimedToken) await bindToken(client, tenant.id, conversation.id, claimedToken);
 
     // Abuse and cost control on the shared demo number: one closing message,
-    // then silence.
-    if (tenant.is_demo && contact.message_count > config.demoMessageCap) {
-      if (contact.message_count > config.demoMessageCap + 1) return skip("demo_cap");
+    // then silence — until a new code arrives and the allowance restarts.
+    if (tenant.is_demo && messageCount > config.demoMessageCap) {
+      if (messageCount > config.demoMessageCap + 1) return skip("demo_cap");
       return send(
         client,
         tenant.id,
@@ -205,6 +214,7 @@ async function resolveConversation(
   client: PoolClient,
   tenantId: string,
   contactId: string,
+  restart: boolean,
 ): Promise<ConversationRow> {
   const existing = await one<ConversationRow>(
     client,
@@ -216,9 +226,9 @@ async function resolveConversation(
       limit 1`,
     [contactId],
   );
-  if (existing && !existing.stale) return existing;
+  if (existing && !existing.stale && !restart) return existing;
 
-  if (existing?.stale) {
+  if (existing) {
     await client.query(`update conversations set state = 'closed' where id = $1`, [existing.id]);
   }
 
@@ -233,15 +243,15 @@ async function resolveConversation(
 }
 
 /**
- * Binds the browser session to this phone number. Only ever happens on the
- * first message that carries a valid, unclaimed code — after this the phone
- * number is the durable key and the token is history.
+ * Binds the browser session to this phone number. Happens on any message that
+ * carries a valid, unclaimed code: the first one starts the demo, and a later
+ * one — a second code built on the session page — starts it over. Each code is
+ * claimable once, so re-sending the same one changes nothing.
  */
 async function claimToken(
   client: PoolClient,
   tenantId: string,
   contactId: string,
-  conversationId: string,
   body: string | null | undefined,
 ): Promise<string | null> {
   const token = extractToken(body);
@@ -259,13 +269,38 @@ async function claimToken(
     [contactId, token, tenantId],
   );
   if (!claimed) return null;
+  return claimed.token;
+}
 
-  await client.query(`update conversations set signup_token = $1 where id = $2`, [token, conversationId]);
+/** Points the conversation at the code it is running, once that conversation exists. */
+async function bindToken(
+  client: PoolClient,
+  tenantId: string,
+  conversationId: string,
+  token: string,
+): Promise<void> {
+  const bound = await one<{ contact_id: string }>(
+    client,
+    `update conversations set signup_token = $1 where id = $2 returning contact_id`,
+    [token, conversationId],
+  );
   await client.query(
     `insert into events (tenant_id, kind, ref, data) values ($1, 'token.claimed', $2, $3)`,
-    [tenantId, token, JSON.stringify({ contactId, conversationId })],
+    [tenantId, token, JSON.stringify({ contactId: bound?.contact_id ?? null, conversationId })],
   );
-  return claimed.token;
+}
+
+/**
+ * Gives the contact the free-message allowance the new code came with. The cap
+ * is per demo run, not per phone number for life.
+ */
+async function restartDemoAllowance(client: PoolClient, contactId: string): Promise<number> {
+  const row = await one<{ message_count: number }>(
+    client,
+    `update contacts set message_count = 1 where id = $1 returning message_count`,
+    [contactId],
+  );
+  return row?.message_count ?? 1;
 }
 
 async function send(
